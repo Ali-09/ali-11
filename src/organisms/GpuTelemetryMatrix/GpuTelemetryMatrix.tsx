@@ -46,7 +46,7 @@ export const GpuTelemetryMatrix: React.FC<GpuTelemetryMatrixProps> = ({
       <GpuMetricTile
         title="HARDWARE ENGINE"
         icon={<Icon name="Cpu" size={14} glow="purple" />}
-        mainValue={<div className="text-sm font-bold text-slate-800 dark:text-purple-300 truncate">{gpu.name}</div>}
+        mainValue={<div className="text-xs sm:text-sm font-bold truncate text-slate-800 dark:text-purple-300 truncate">{gpu.name}</div>}
         subValue="16GB GDDR7 // Blackwell"
       />
 
@@ -89,7 +89,7 @@ export const GpuTelemetryMatrix: React.FC<GpuTelemetryMatrixProps> = ({
         title="GAMING READY"
         icon={<Icon name="Shield" size={14} glow={gpu.gaming_ready ? 'emerald' : 'rose'} />}
         mainValue={
-          <div className={`text-xs sm:text-sm font-bold truncate ${gpu.gaming_ready ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
+          <div className={`text-xs sm:text-xs sm:text-sm font-bold truncate truncate ${gpu.gaming_ready ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
             {gpu.gaming_ready ? '100% READY' : '⚡ AI IN VRAM'}
           </div>
         }

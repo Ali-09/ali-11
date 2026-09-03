@@ -591,7 +591,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                         technicalSpecs: c.specs
                       });
                     }}
-                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 bg-gradient-to-br ${c.bgGradient} ${c.borderColor} flex items-center justify-center cursor-pointer shadow-xl relative transition-all duration-300 ${
+                    className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border-2 bg-gradient-to-br ${c.bgGradient} ${c.borderColor} flex items-center justify-center cursor-pointer shadow-xl relative transition-all duration-300 ${
                       isHovered ? 'ring-4 ring-purple-500/60 shadow-2xl' : ''
                     }`}
                   >
