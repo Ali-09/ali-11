@@ -109,3 +109,12 @@ html.light .theme-card:hover {
 .elemental-orb:hover {
   transform: scale(1.15);
 }
+
+/* Responsive utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

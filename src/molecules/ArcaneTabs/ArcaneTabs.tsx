@@ -41,7 +41,7 @@ export const ArcaneTabs: React.FC<ArcaneTabsProps> = ({
   }[tone];
 
   return (
-    <div className={`flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-cyberdark border border-slate-200 dark:border-cyberborder font-mono text-xs overflow-x-auto ${className}`}>
+    <div className={`flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-cyberdark border border-slate-200 dark:border-cyberborder font-mono text-xs overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden max-w-full ${className}`}>
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (

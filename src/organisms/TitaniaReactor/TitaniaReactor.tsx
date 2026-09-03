@@ -458,34 +458,34 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
       <div className="absolute bottom-3 right-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none">[CHAMBER_SYNC] ┘</div>
 
       {/* 1. MASTER HEADER */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b border-slate-200 dark:border-purple-500/20 gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/50 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 shrink-0">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between pb-4 border-b border-slate-200 dark:border-purple-500/20 gap-4 min-w-0">
+        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/50 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 shrink-0 mt-1 sm:mt-0">
             <Icon name="Atom" size={22} glow="purple" />
           </div>
-          <div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-xl font-black font-heading tracking-wider bg-gradient-to-r from-purple-600 via-indigo-500 to-amber-500 dark:from-purple-300 dark:via-cyan-200 dark:to-amber-300 bg-clip-text text-transparent">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h2 className="text-lg sm:text-xl font-black font-heading tracking-wider bg-gradient-to-r from-purple-600 via-indigo-500 to-amber-500 dark:from-purple-300 dark:via-cyan-200 dark:to-amber-300 bg-clip-text text-transparent truncate">
                 {title}
               </h2>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-cyan-300 border border-purple-300 dark:border-purple-800 tracking-widest uppercase shadow-sm">
+              <span className="px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-cyan-300 border border-purple-300 dark:border-purple-800 tracking-widest uppercase shadow-sm shrink-0">
                 ALCHEMICAL RESONANCE BLUEPRINT
               </span>
             </div>
-            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1 truncate">
               {subtitle}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 font-mono text-xs shrink-0">
-          <span className="text-[11px] text-slate-400 hidden sm:inline">
+        <div className="flex items-center justify-between sm:justify-end gap-3 font-mono text-xs w-full lg:w-auto shrink-0 flex-wrap">
+          <span className="text-[11px] text-slate-400 hidden xl:inline">
             Pasa el cursor sobre los sellos rúnicos // Doble clic para telemetría
           </span>
-          <div className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#070c18] border border-slate-200 dark:border-purple-500/30 flex items-center gap-2 shadow-inner">
+          <div className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#070c18] border border-slate-200 dark:border-purple-500/30 flex items-center gap-2 shadow-inner shrink-0">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-            <span className="text-slate-500 dark:text-slate-400">FREQUENCY:</span>
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">{frequency}</span>
+            <span className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs">FREQUENCY:</span>
+            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-[10px] sm:text-xs">{frequency}</span>
           </div>
         </div>
       </div>
@@ -493,7 +493,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
       {/* 2. GRAND RESONANCE ARENA */}
       <div
         ref={containerRef}
-        className="relative w-full min-h-[500px] lg:min-h-[550px] bg-gradient-to-b from-slate-200/30 via-slate-200/10 to-transparent dark:from-[#050914] dark:via-[#080e22] dark:to-[#040711] rounded-3xl my-6 overflow-hidden border border-slate-200 dark:border-purple-500/25 flex flex-col lg:flex-row items-center justify-between p-4 lg:p-8 select-none shadow-2xl"
+        className="relative w-full max-w-full min-h-[440px] sm:min-h-[480px] lg:min-h-[550px] bg-gradient-to-b from-slate-200/30 via-slate-200/10 to-transparent dark:from-[#050914] dark:via-[#080e22] dark:to-[#040711] rounded-3xl my-6 overflow-hidden border border-slate-200 dark:border-purple-500/25 flex flex-col lg:flex-row items-center justify-between p-4 lg:p-8 select-none shadow-2xl"
       >
         {/* Canvas Mágico de Partículas Celestiales */}
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />

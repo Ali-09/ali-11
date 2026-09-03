@@ -61,9 +61,14 @@ export const NodePipeline: React.FC<NodePipelineProps> = ({
 
             {/* Connecting Animated Arrow */}
             {idx < nodes.length - 1 && (
-              <div className="hidden md:flex items-center text-cyan-400/80 font-black text-sm px-1 animate-pulse">
-                ──▶
-              </div>
+              <>
+                <div className="hidden md:flex items-center text-cyan-400/80 font-black text-sm px-1 animate-pulse">
+                  ──▶
+                </div>
+                <div className="flex md:hidden items-center justify-center text-cyan-400/80 font-black text-sm py-1 animate-pulse">
+                  ▼
+                </div>
+              </>
             )}
           </React.Fragment>
         ))}
