@@ -33,16 +33,16 @@ export const HistogramWave: React.FC<HistogramWaveProps> = ({
     return path;
   };
 
-  const width = 280;
+  const width = 320;
 
   return (
     <div className={`p-3.5 rounded-2xl bg-[#040816] border border-white/10 font-mono select-none ${className}`}>
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-[10px]">
-        <span className="font-bold text-slate-300 uppercase tracking-wider">{label}</span>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-between pb-2 mb-2 border-b border-white/10 text-[10px] gap-2">
+        <span className="font-bold text-slate-300 uppercase tracking-wider truncate">{label}</span>
+        <div className="flex items-center gap-2 shrink-0">
           {channels.map((c) => (
             <span key={c.name} className="flex items-center gap-1 text-[9px]" style={{ color: c.color }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: c.color }} />
+              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: c.color }} />
               {c.name.split('/')[0]}
             </span>
           ))}
@@ -50,7 +50,7 @@ export const HistogramWave: React.FC<HistogramWaveProps> = ({
       </div>
 
       <div className="relative w-full overflow-hidden" style={{ height }}>
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full">
+        <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" className="w-full h-full">
           <defs>
             {channels.map((c, idx) => (
               <linearGradient key={`grad-${idx}`} id={`histo-grad-${idx}`} x1="0" y1="0" x2="0" y2="1">

@@ -30,47 +30,34 @@ export const NodePipeline: React.FC<NodePipelineProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`p-6 rounded-3xl bg-[#050918]/90 border border-purple-500/25 shadow-2xl font-mono select-none ${className}`}>
-      <div className="flex items-center justify-between pb-3 mb-5 border-b border-white/10">
-        <span className="text-xs font-black font-heading tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+    <div className={`p-4 sm:p-6 rounded-3xl bg-[#050918]/90 border border-purple-500/25 shadow-2xl font-mono select-none ${className}`}>
+      <div className="flex flex-wrap items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/10 gap-2">
+        <span className="text-xs font-black font-heading tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent truncate">
           {title}
         </span>
-        <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/40">
-          PIPELINE ACTIVE (4 NODES)
+        <span className="px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/40 shrink-0">
+          PIPELINE ACTIVE ({nodes.length} NODES)
         </span>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-3 relative">
-        {nodes.map((n, idx) => (
-          <React.Fragment key={n.id}>
-            {/* Node Card */}
-            <motion.div
-              whileHover={{ scale: 1.05, y: -2 }}
-              className="flex-1 w-full md:w-auto p-4 rounded-2xl bg-[#090f26] border border-white/10 hover:border-cyan-400/50 transition-all duration-200 shadow-lg relative group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center shrink-0">
-                  <Icon name={n.icon} size={20} glow={n.tone} />
-                </div>
-                <div>
-                  <h5 className="font-bold text-white text-xs tracking-wide">{n.name}</h5>
-                  <p className="text-[10px] text-slate-400 mt-0.5">{n.role}</p>
-                </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 relative">
+        {nodes.map((n) => (
+          <motion.div
+            key={n.id}
+            whileHover={{ scale: 1.02, y: -2 }}
+            className="p-3.5 sm:p-4 rounded-2xl bg-[#090f26] border border-white/10 hover:border-cyan-400/50 transition-all duration-200 shadow-lg min-w-0"
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center shrink-0">
+                <Icon name={n.icon} size={18} glow={n.tone} />
               </div>
-            </motion.div>
-
-            {/* Connecting Animated Arrow */}
-            {idx < nodes.length - 1 && (
-              <>
-                <div className="hidden md:flex items-center text-cyan-400/80 font-black text-sm px-1 animate-pulse">
-                  ──▶
-                </div>
-                <div className="flex md:hidden items-center justify-center text-cyan-400/80 font-black text-sm py-1 animate-pulse">
-                  ▼
-                </div>
-              </>
-            )}
-          </React.Fragment>
+              <div className="min-w-0 flex-1">
+                <h5 className="font-bold text-white text-xs tracking-wide truncate">{n.name}</h5>
+                <p className="text-[10px] text-slate-400 mt-0.5 truncate">{n.role}</p>
+              </div>
+              <span className={`w-2 h-2 rounded-full shrink-0 ${n.status === 'active' ? 'bg-emerald-400' : 'bg-slate-600'}`} />
+            </div>
+          </motion.div>
         ))}
       </div>
     </div>

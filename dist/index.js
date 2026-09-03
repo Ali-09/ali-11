@@ -746,32 +746,41 @@ var ArcaneTabs = ({
     rose: "bg-rose-600 text-white shadow-md shadow-rose-600/30",
     cyan: "bg-cyan-600 text-white shadow-md shadow-cyan-600/30"
   }[tone];
-  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: `flex items-center gap-2 p-1.5 rounded-2xl bg-slate-100 dark:bg-cyberdark border border-slate-200 dark:border-cyberborder font-mono text-xs overflow-x-auto ${className}`, children: tabs.map((tab) => {
-    const isActive = activeTab === tab.id;
-    return /* @__PURE__ */ jsxRuntime.jsxs(
-      "button",
-      {
-        type: "button",
-        onClick: () => onChange(tab.id),
-        className: `px-4 py-2 rounded-xl font-bold flex items-center gap-2 whitespace-nowrap transition-all duration-200 select-none ${isActive ? activeBg : "text-slate-600 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-300"}`,
-        children: [
-          tab.iconName && /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: tab.iconName, size: 14 }),
-          /* @__PURE__ */ jsxRuntime.jsx("span", { children: tab.label }),
-          tab.dot && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-2 h-2 rounded-full bg-emerald-400 shrink-0" }),
-          tab.badge && /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: tab.badgeTone || "purple", children: tab.badge }),
-          tab.tooltip && /* @__PURE__ */ jsxRuntime.jsx(
-            ArcaneTooltip,
-            {
-              term: tab.tooltip.term,
-              techTerm: tab.tooltip.techTerm,
-              explanation: tab.tooltip.explanation
-            }
-          )
-        ]
-      },
-      tab.id
-    );
-  }) });
+  return /* @__PURE__ */ jsxRuntime.jsx(
+    "div",
+    {
+      className: `flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-cyberdark border border-slate-200 dark:border-cyberborder font-mono text-xs overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden max-w-full ${className}`,
+      children: tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return /* @__PURE__ */ jsxRuntime.jsxs(
+          "button",
+          {
+            type: "button",
+            onClick: () => onChange(tab.id),
+            className: `px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold flex items-center gap-1.5 sm:gap-2 whitespace-nowrap transition-all duration-200 select-none text-[11px] sm:text-xs shrink-0 ${isActive ? activeBg : "text-slate-600 dark:text-slate-400 hover:text-purple-500 dark:hover:text-purple-300"}`,
+            children: [
+              tab.iconName && /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: tab.iconName, size: 13, className: "shrink-0" }),
+              /* @__PURE__ */ jsxRuntime.jsx("span", { children: tab.shortLabel ? /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+                /* @__PURE__ */ jsxRuntime.jsx("span", { className: "inline sm:hidden", children: tab.shortLabel }),
+                /* @__PURE__ */ jsxRuntime.jsx("span", { className: "hidden sm:inline", children: tab.label })
+              ] }) : tab.label }),
+              tab.dot && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" }),
+              tab.badge && /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: tab.badgeTone || "purple", children: tab.badge }),
+              tab.tooltip && /* @__PURE__ */ jsxRuntime.jsx(
+                ArcaneTooltip,
+                {
+                  term: tab.tooltip.term,
+                  techTerm: tab.tooltip.techTerm,
+                  explanation: tab.tooltip.explanation
+                }
+              )
+            ]
+          },
+          tab.id
+        );
+      })
+    }
+  );
 };
 var ArcaneStepper = ({
   steps,
@@ -1238,23 +1247,23 @@ var TitaniaReactor = ({
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute top-3 right-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none", children: "[SEC-REV-A] \u2510" }),
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute bottom-3 left-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none", children: "\u2514 [QUANTUM_GRID]" }),
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute bottom-3 right-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none", children: "[CHAMBER_SYNC] \u2518" }),
-    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col md:flex-row items-start md:items-center justify-between pb-4 border-b border-slate-200 dark:border-purple-500/20 gap-3", children: [
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-3", children: [
-        /* @__PURE__ */ jsxRuntime.jsx("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/50 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 shrink-0", children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Atom", size: 22, glow: "purple" }) }),
-        /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
-          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-3 flex-wrap", children: [
-            /* @__PURE__ */ jsxRuntime.jsx("h2", { className: "text-xl font-black font-heading tracking-wider bg-gradient-to-r from-purple-600 via-indigo-500 to-amber-500 dark:from-purple-300 dark:via-cyan-200 dark:to-amber-300 bg-clip-text text-transparent", children: title }),
-            /* @__PURE__ */ jsxRuntime.jsx("span", { className: "px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-cyan-300 border border-purple-300 dark:border-purple-800 tracking-widest uppercase shadow-sm", children: "ALCHEMICAL RESONANCE BLUEPRINT" })
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col lg:flex-row items-start lg:items-center justify-between pb-4 border-b border-slate-200 dark:border-purple-500/20 gap-4 min-w-0", children: [
+      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-start sm:items-center gap-3 min-w-0 flex-1", children: [
+        /* @__PURE__ */ jsxRuntime.jsx("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/50 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 shrink-0 mt-1 sm:mt-0", children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Atom", size: 22, glow: "purple" }) }),
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "min-w-0 flex-1", children: [
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2.5 flex-wrap", children: [
+            /* @__PURE__ */ jsxRuntime.jsx("h2", { className: "text-lg sm:text-xl font-black font-heading tracking-wider bg-gradient-to-r from-purple-600 via-indigo-500 to-amber-500 dark:from-purple-300 dark:via-cyan-200 dark:to-amber-300 bg-clip-text text-transparent truncate", children: title }),
+            /* @__PURE__ */ jsxRuntime.jsx("span", { className: "px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-cyan-300 border border-purple-300 dark:border-purple-800 tracking-widest uppercase shadow-sm shrink-0", children: "ALCHEMICAL RESONANCE BLUEPRINT" })
           ] }),
-          /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5", children: subtitle })
+          /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-xs font-mono text-slate-500 dark:text-slate-400 mt-1 truncate", children: subtitle })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 font-mono text-xs shrink-0", children: [
-        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-[11px] text-slate-400 hidden sm:inline", children: "Pasa el cursor sobre los sellos r\xFAnicos // Doble clic para telemetr\xEDa" }),
-        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#070c18] border border-slate-200 dark:border-purple-500/30 flex items-center gap-2 shadow-inner", children: [
+      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between sm:justify-end gap-3 font-mono text-xs w-full lg:w-auto shrink-0 flex-wrap", children: [
+        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-[11px] text-slate-400 hidden xl:inline", children: "Pasa el cursor sobre los sellos r\xFAnicos // Doble clic para telemetr\xEDa" }),
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#070c18] border border-slate-200 dark:border-purple-500/30 flex items-center gap-2 shadow-inner shrink-0", children: [
           /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" }),
-          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-slate-500 dark:text-slate-400", children: "FREQUENCY:" }),
-          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-bold text-emerald-600 dark:text-emerald-400", children: frequency })
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs", children: "FREQUENCY:" }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-bold text-emerald-600 dark:text-emerald-400 text-[10px] sm:text-xs", children: frequency })
         ] })
       ] })
     ] }),
@@ -1262,7 +1271,7 @@ var TitaniaReactor = ({
       "div",
       {
         ref: containerRef,
-        className: "relative w-full min-h-[500px] lg:min-h-[550px] bg-gradient-to-b from-slate-200/30 via-slate-200/10 to-transparent dark:from-[#050914] dark:via-[#080e22] dark:to-[#040711] rounded-3xl my-6 overflow-hidden border border-slate-200 dark:border-purple-500/25 flex flex-col lg:flex-row items-center justify-between p-4 lg:p-8 select-none shadow-2xl",
+        className: "relative w-full max-w-full min-h-[440px] sm:min-h-[480px] lg:min-h-[550px] bg-gradient-to-b from-slate-200/30 via-slate-200/10 to-transparent dark:from-[#050914] dark:via-[#080e22] dark:to-[#040711] rounded-3xl my-6 overflow-hidden border border-slate-200 dark:border-purple-500/25 flex flex-col lg:flex-row items-center justify-between p-4 lg:p-8 select-none shadow-2xl",
         children: [
           /* @__PURE__ */ jsxRuntime.jsx("canvas", { ref: canvasRef, className: "absolute inset-0 w-full h-full pointer-events-none z-0" }),
           /* @__PURE__ */ jsxRuntime.jsxs("svg", { className: "absolute inset-0 w-full h-full pointer-events-none z-10 hidden lg:block", children: [
@@ -1349,7 +1358,7 @@ var TitaniaReactor = ({
                         technicalSpecs: c.specs
                       });
                     },
-                    className: `w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 bg-gradient-to-br ${c.bgGradient} ${c.borderColor} flex items-center justify-center cursor-pointer shadow-xl relative transition-all duration-300 ${isHovered ? "ring-4 ring-purple-500/60 shadow-2xl" : ""}`,
+                    className: `w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border-2 bg-gradient-to-br ${c.bgGradient} ${c.borderColor} flex items-center justify-center cursor-pointer shadow-xl relative transition-all duration-300 ${isHovered ? "ring-4 ring-purple-500/60 shadow-2xl" : ""}`,
                     children: [
                       /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/20 animate-[spin_15s_linear_infinite]" }),
                       /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: c.icon, size: 20, glow: c.id === "lumi" ? "gold" : c.id === "plasma" ? "purple" : c.id === "ignis" ? "rose" : c.id === "geo" ? "emerald" : "cyan" }),
@@ -1612,7 +1621,7 @@ var GpuTelemetryMatrix = ({
       {
         title: "HARDWARE ENGINE",
         icon: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Cpu", size: 14, glow: "purple" }),
-        mainValue: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "text-sm font-bold text-slate-800 dark:text-purple-300 truncate", children: gpu.name }),
+        mainValue: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "text-xs sm:text-sm font-bold truncate text-slate-800 dark:text-purple-300 truncate", children: gpu.name }),
         subValue: "16GB GDDR7 // Blackwell"
       }
     ),
@@ -1668,7 +1677,7 @@ var GpuTelemetryMatrix = ({
       {
         title: "GAMING READY",
         icon: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Shield", size: 14, glow: gpu.gaming_ready ? "emerald" : "rose" }),
-        mainValue: /* @__PURE__ */ jsxRuntime.jsx("div", { className: `text-xs sm:text-sm font-bold truncate ${gpu.gaming_ready ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`, children: gpu.gaming_ready ? "100% READY" : "\u26A1 AI IN VRAM" }),
+        mainValue: /* @__PURE__ */ jsxRuntime.jsx("div", { className: `text-xs sm:text-xs sm:text-sm font-bold truncate truncate ${gpu.gaming_ready ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`, children: gpu.gaming_ready ? "100% READY" : "\u26A1 AI IN VRAM" }),
         subValue: gpu.gaming_ready ? "VRAM unallocated" : "Auto-unload 5m"
       }
     ),
@@ -1791,7 +1800,7 @@ var ServiceCard = ({
   ] });
 };
 var LiveTerminal = () => {
-  return /* @__PURE__ */ jsxRuntime.jsxs(Card, { hoverEffect: false, className: "flex flex-col justify-between p-5 h-full", children: [
+  return /* @__PURE__ */ jsxRuntime.jsxs(Card, { hoverEffect: false, className: "flex flex-col justify-between p-4 sm:p-5", children: [
     /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between pb-3 border-b border-slate-200 dark:border-cyberborder", children: [
       /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2", children: [
         /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-purple-500 font-mono text-sm", children: "\u25B6_" }),
@@ -1860,18 +1869,29 @@ var ArcaneServerPortalCard = ({
   isManaged = false,
   isWebDev = true,
   isSystemInternal = false,
+  status,
+  category,
+  description,
   onOpen,
   onAdopt,
   onKill,
+  onStart,
+  onStop,
+  onRestart,
+  onEdit,
   isAdopting = false,
   isKilling = false,
+  isOperating = false,
+  lastError,
   className = ""
 }) => {
-  const localUrl = urlLocal || `http://localhost:${port}`;
+  const localUrl = urlLocal || (port > 0 ? `http://localhost:${port}` : "#");
+  const isRunning = status === "running" || isManaged && !!pid && pid > 0;
+  const isStarting = status === "starting";
   return /* @__PURE__ */ jsxRuntime.jsxs(
     Card,
     {
-      glowAura: isManaged ? "purple" : "none",
+      glowAura: isManaged ? isRunning ? "emerald" : "purple" : "none",
       className: `p-4 flex flex-col justify-between space-y-3 font-mono text-xs transition-all hover:scale-[1.01] ${className}`,
       children: [
         /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
@@ -1879,25 +1899,29 @@ var ArcaneServerPortalCard = ({
             /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "min-w-0 flex-1", children: [
               /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 flex-wrap", children: [
                 /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-sm font-bold text-slate-900 dark:text-white truncate", title, children: title }),
-                isManaged && /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "emerald", dot: true, children: "GRIMORIO" }),
-                !isManaged && isWebDev && /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "purple", children: "PORTAL WEB" }),
+                isManaged && /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: isRunning ? /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "emerald", dot: true, pulse: true, children: "CORRIENDO EN EL NEXO" }) : isStarting ? /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "amber", dot: true, pulse: true, children: "ARRANCANDO" }) : /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "rose", dot: true, children: "DETENIDO" }) }),
+                category && /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "cyan", children: category.toUpperCase() }),
+                !isManaged && isWebDev && /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "purple", children: "RADAR SO" }),
                 isSystemInternal && /* @__PURE__ */ jsxRuntime.jsx(Badge, { tone: "slate", children: "SISTEMA" })
               ] }),
               /* @__PURE__ */ jsxRuntime.jsxs("p", { className: "text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2 flex-wrap", children: [
-                /* @__PURE__ */ jsxRuntime.jsxs("span", { children: [
-                  "PID: ",
-                  /* @__PURE__ */ jsxRuntime.jsx("b", { className: "text-slate-700 dark:text-slate-200", children: pid })
+                pid !== void 0 && pid > 0 && /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+                  /* @__PURE__ */ jsxRuntime.jsxs("span", { children: [
+                    "PID: ",
+                    /* @__PURE__ */ jsxRuntime.jsx("b", { className: "text-slate-700 dark:text-slate-200", children: pid })
+                  ] }),
+                  /* @__PURE__ */ jsxRuntime.jsx("span", { children: "\u2022" })
                 ] }),
-                /* @__PURE__ */ jsxRuntime.jsx("span", { children: "\u2022" }),
-                /* @__PURE__ */ jsxRuntime.jsxs("span", { children: [
+                processName && /* @__PURE__ */ jsxRuntime.jsxs("span", { children: [
                   "PROCESO: ",
                   /* @__PURE__ */ jsxRuntime.jsx("b", { className: "text-purple-600 dark:text-purple-300", children: processName })
                 ] })
-              ] })
+              ] }),
+              description && /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-[11px] text-slate-600 dark:text-slate-300 mt-1 line-clamp-2", children: description })
             ] }),
             /* @__PURE__ */ jsxRuntime.jsx("span", { className: "shrink-0 px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-cyberdark border border-slate-200 dark:border-cyberborder text-[10px] font-bold text-slate-600 dark:text-slate-400", children: protocol })
           ] }),
-          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "mt-3 p-2.5 rounded-xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-cyberborder space-y-1.5", children: [
+          port > 0 && /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "mt-3 p-2.5 rounded-xl bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-cyberborder space-y-1.5", children: [
             /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "text-slate-500 dark:text-slate-400 flex items-center gap-1", children: [
                 /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Server", size: 12 }),
@@ -1936,9 +1960,16 @@ var ArcaneServerPortalCard = ({
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "pt-2 border-t border-slate-200 dark:border-cyberborder flex items-center justify-between gap-2", children: [
-          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1.5", children: [
-            /* @__PURE__ */ jsxRuntime.jsxs(
+        lastError && !isRunning && /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "mt-2 p-2 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-[10px] space-y-1", children: [
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1.5 font-bold", children: [
+            /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "AlertCircle", size: 12, glow: "rose" }),
+            /* @__PURE__ */ jsxRuntime.jsx("span", { children: "Falla en la Invocaci\xF3n / Comando:" })
+          ] }),
+          /* @__PURE__ */ jsxRuntime.jsx("pre", { className: "font-mono text-[9px] whitespace-pre-wrap line-clamp-3 opacity-90 overflow-hidden", children: lastError })
+        ] }),
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "pt-2 border-t border-slate-200 dark:border-cyberborder flex items-center justify-between gap-2 flex-wrap", children: [
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1.5 flex-wrap", children: [
+            port > 0 && /* @__PURE__ */ jsxRuntime.jsxs(
               "a",
               {
                 href: localUrl,
@@ -1952,6 +1983,58 @@ var ArcaneServerPortalCard = ({
                 ]
               }
             ),
+            isManaged && /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+              isRunning ? /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+                onStop && /* @__PURE__ */ jsxRuntime.jsxs(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: onStop,
+                    disabled: isOperating,
+                    className: "px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/60 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-bold flex items-center gap-1 text-[11px] whitespace-nowrap transition-colors",
+                    title: "Detener servidor en el Nexo",
+                    children: [
+                      /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Square", size: 11 }),
+                      "DETENER"
+                    ]
+                  }
+                ),
+                onRestart && /* @__PURE__ */ jsxRuntime.jsx(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: onRestart,
+                    disabled: isOperating,
+                    className: "p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-cyberdark dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-cyberborder transition-colors",
+                    title: "Reiniciar servidor",
+                    children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "RefreshCw", size: 12 })
+                  }
+                )
+              ] }) : /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: onStart && /* @__PURE__ */ jsxRuntime.jsxs(
+                "button",
+                {
+                  type: "button",
+                  onClick: onStart,
+                  disabled: isOperating,
+                  className: "px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-bold flex items-center gap-1 text-[11px] whitespace-nowrap transition-colors",
+                  title: "Iniciar servidor en el Nexo",
+                  children: [
+                    /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Play", size: 12 }),
+                    "INICIAR"
+                  ]
+                }
+              ) }),
+              onEdit && /* @__PURE__ */ jsxRuntime.jsx(
+                "button",
+                {
+                  type: "button",
+                  onClick: onEdit,
+                  className: "p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-cyberdark dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-cyberborder transition-colors",
+                  title: "Editar par\xE1metros del servidor",
+                  children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Settings", size: 12 })
+                }
+              )
+            ] }),
             !isManaged && onAdopt && /* @__PURE__ */ jsxRuntime.jsxs(
               "button",
               {
@@ -1959,6 +2042,7 @@ var ArcaneServerPortalCard = ({
                 onClick: onAdopt,
                 disabled: isAdopting,
                 className: "px-2.5 py-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/60 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 font-bold flex items-center gap-1 text-[11px] whitespace-nowrap transition-colors",
+                title: "Adoptar e integrar bajo el control del Nexo",
                 children: [
                   /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "PlusCircle", size: 12 }),
                   "ADOPTAR"
@@ -1966,7 +2050,7 @@ var ArcaneServerPortalCard = ({
               }
             )
           ] }),
-          onKill && /* @__PURE__ */ jsxRuntime.jsx(
+          !isManaged && onKill && /* @__PURE__ */ jsxRuntime.jsx(
             "button",
             {
               type: "button",
@@ -2567,16 +2651,16 @@ var HistogramWave = ({
     path += ` T ${pts[pts.length - 1].x} ${pts[pts.length - 1].y}`;
     return path;
   };
-  const width = 280;
+  const width = 320;
   return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `p-3.5 rounded-2xl bg-[#040816] border border-white/10 font-mono select-none ${className}`, children: [
-    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between pb-2 mb-2 border-b border-white/10 text-[10px]", children: [
-      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-bold text-slate-300 uppercase tracking-wider", children: label }),
-      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex items-center gap-2", children: channels.map((c) => /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "flex items-center gap-1 text-[9px]", style: { color: c.color }, children: [
-        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-1.5 h-1.5 rounded-full", style: { backgroundColor: c.color } }),
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-wrap items-center justify-between pb-2 mb-2 border-b border-white/10 text-[10px] gap-2", children: [
+      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-bold text-slate-300 uppercase tracking-wider truncate", children: label }),
+      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex items-center gap-2 shrink-0", children: channels.map((c) => /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "flex items-center gap-1 text-[9px]", style: { color: c.color }, children: [
+        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-1.5 h-1.5 rounded-full shrink-0", style: { backgroundColor: c.color } }),
         c.name.split("/")[0]
       ] }, c.name)) })
     ] }),
-    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "relative w-full overflow-hidden", style: { height }, children: /* @__PURE__ */ jsxRuntime.jsxs("svg", { viewBox: `0 0 ${width} ${height}`, className: "w-full h-full", children: [
+    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "relative w-full overflow-hidden", style: { height }, children: /* @__PURE__ */ jsxRuntime.jsxs("svg", { viewBox: `0 0 ${width} ${height}`, preserveAspectRatio: "none", className: "w-full h-full", children: [
       /* @__PURE__ */ jsxRuntime.jsx("defs", { children: channels.map((c, idx) => /* @__PURE__ */ jsxRuntime.jsxs("linearGradient", { id: `histo-grad-${idx}`, x1: "0", y1: "0", x2: "0", y2: "1", children: [
         /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "0%", stopColor: c.color, stopOpacity: "0.35" }),
         /* @__PURE__ */ jsxRuntime.jsx("stop", { offset: "100%", stopColor: c.color, stopOpacity: "0.0" })
@@ -2605,28 +2689,31 @@ var NodePipeline = ({
   nodes = DEFAULT_NODES,
   className = ""
 }) => {
-  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `p-6 rounded-3xl bg-[#050918]/90 border border-purple-500/25 shadow-2xl font-mono select-none ${className}`, children: [
-    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between pb-3 mb-5 border-b border-white/10", children: [
-      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-xs font-black font-heading tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent", children: title }),
-      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/40", children: "PIPELINE ACTIVE (4 NODES)" })
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `p-4 sm:p-6 rounded-3xl bg-[#050918]/90 border border-purple-500/25 shadow-2xl font-mono select-none ${className}`, children: [
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-wrap items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/10 gap-2", children: [
+      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-xs font-black font-heading tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent truncate", children: title }),
+      /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/40 shrink-0", children: [
+        "PIPELINE ACTIVE (",
+        nodes.length,
+        " NODES)"
+      ] })
     ] }),
-    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-col md:flex-row items-center justify-between gap-3 relative", children: nodes.map((n, idx) => /* @__PURE__ */ jsxRuntime.jsxs(React3__default.default.Fragment, { children: [
-      /* @__PURE__ */ jsxRuntime.jsx(
-        framerMotion.motion.div,
-        {
-          whileHover: { scale: 1.05, y: -2 },
-          className: "flex-1 w-full md:w-auto p-4 rounded-2xl bg-[#090f26] border border-white/10 hover:border-cyan-400/50 transition-all duration-200 shadow-lg relative group",
-          children: /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-3", children: [
-            /* @__PURE__ */ jsxRuntime.jsx("div", { className: "w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: n.icon, size: 20, glow: n.tone }) }),
-            /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
-              /* @__PURE__ */ jsxRuntime.jsx("h5", { className: "font-bold text-white text-xs tracking-wide", children: n.name }),
-              /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-[10px] text-slate-400 mt-0.5", children: n.role })
-            ] })
-          ] })
-        }
-      ),
-      idx < nodes.length - 1 && /* @__PURE__ */ jsxRuntime.jsx("div", { className: "hidden md:flex items-center text-cyan-400/80 font-black text-sm px-1 animate-pulse", children: "\u2500\u2500\u25B6" })
-    ] }, n.id)) })
+    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 relative", children: nodes.map((n) => /* @__PURE__ */ jsxRuntime.jsx(
+      framerMotion.motion.div,
+      {
+        whileHover: { scale: 1.02, y: -2 },
+        className: "p-3.5 sm:p-4 rounded-2xl bg-[#090f26] border border-white/10 hover:border-cyan-400/50 transition-all duration-200 shadow-lg min-w-0",
+        children: /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-3 min-w-0", children: [
+          /* @__PURE__ */ jsxRuntime.jsx("div", { className: "w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: n.icon, size: 18, glow: n.tone }) }),
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "min-w-0 flex-1", children: [
+            /* @__PURE__ */ jsxRuntime.jsx("h5", { className: "font-bold text-white text-xs tracking-wide truncate", children: n.name }),
+            /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-[10px] text-slate-400 mt-0.5 truncate", children: n.role })
+          ] }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: `w-2 h-2 rounded-full shrink-0 ${n.status === "active" ? "bg-emerald-400" : "bg-slate-600"}` })
+        ] })
+      },
+      n.id
+    )) })
   ] });
 };
 

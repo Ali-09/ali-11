@@ -248,6 +248,7 @@ declare const ArcaneStatCard: React.FC<ArcaneStatCardProps>;
 interface TabItem {
     id: string;
     label: string;
+    shortLabel?: string;
     iconName?: any;
     badge?: string;
     badgeTone?: 'purple' | 'amber' | 'emerald' | 'cyan' | 'rose';
@@ -378,6 +379,7 @@ interface ServiceItem {
     url_local?: string;
     url_lan?: string;
     models?: string[];
+    last_error?: string;
 }
 interface ServiceCardProps {
     service: ServiceItem;
@@ -393,19 +395,28 @@ declare const LiveTerminal: React.FC;
 interface ArcaneServerPortalCardProps {
     title: string;
     port: number;
-    pid: number;
-    processName: string;
+    pid?: number;
+    processName?: string;
     protocol?: string;
     urlLocal?: string;
     urlLan?: string;
     isManaged?: boolean;
     isWebDev?: boolean;
     isSystemInternal?: boolean;
+    status?: 'running' | 'stopped' | 'starting' | string;
+    category?: string;
+    description?: string;
     onOpen?: () => void;
     onAdopt?: () => void;
     onKill?: () => void;
+    onStart?: () => void;
+    onStop?: () => void;
+    onRestart?: () => void;
+    onEdit?: () => void;
     isAdopting?: boolean;
     isKilling?: boolean;
+    isOperating?: boolean;
+    lastError?: string;
     className?: string;
 }
 declare const ArcaneServerPortalCard: React.FC<ArcaneServerPortalCardProps>;

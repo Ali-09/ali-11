@@ -15,6 +15,7 @@ export interface ServiceItem {
   url_local?: string;
   url_lan?: string;
   models?: string[];
+  last_error?: string;
 }
 
 export interface ServiceCardProps {

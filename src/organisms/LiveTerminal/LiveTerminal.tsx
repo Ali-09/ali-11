@@ -4,7 +4,7 @@ import { Badge } from '../../atoms/Badge';
 
 export const LiveTerminal: React.FC = () => {
   return (
-    <Card hoverEffect={false} className="flex flex-col justify-between p-5 h-full">
+    <Card hoverEffect={false} className="flex flex-col justify-between p-4 sm:p-5">
       <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-cyberborder">
         <div className="flex items-center gap-2">
           <span className="text-purple-500 font-mono text-sm">▶_</span>
