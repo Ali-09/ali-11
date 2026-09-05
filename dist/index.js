@@ -221,18 +221,20 @@ var Card = ({
 }) => {
   const glowClasses = {
     none: "",
-    purple: "hover:border-purple-500/60 hover:shadow-purple-500/20",
-    gold: "hover:border-amber-500/60 hover:shadow-amber-500/20",
-    emerald: "hover:border-emerald-500/60 hover:shadow-emerald-500/20",
-    rose: "hover:border-rose-500/60 hover:shadow-rose-500/20"
+    purple: "hover:border-purple-400/30 hover:shadow-[0_10px_30px_-5px_rgba(168,85,247,0.15)]",
+    gold: "hover:border-amber-400/30 hover:shadow-[0_10px_30px_-5px_rgba(245,158,11,0.15)]",
+    emerald: "hover:border-emerald-400/30 hover:shadow-[0_10px_30px_-5px_rgba(16,185,129,0.15)]",
+    rose: "hover:border-rose-400/30 hover:shadow-[0_10px_30px_-5px_rgba(244,63,94,0.15)]"
   }[glowAura];
   return /* @__PURE__ */ jsxRuntime.jsx(
     framerMotion.motion.div,
     {
-      whileHover: hoverEffect ? { y: -3 } : void 0,
-      transition: { duration: 0.2 },
+      whileHover: hoverEffect ? {
+        y: -2,
+        transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] }
+      } : void 0,
       onClick,
-      className: `theme-card rounded-2xl p-5 border transition-all duration-300 ${glowClasses} ${className}`,
+      className: `theme-card rounded-2xl p-5 border border-slate-200/80 dark:border-white/[0.08] transition-all duration-300 ${glowClasses} ${className}`,
       children
     }
   );
@@ -749,7 +751,7 @@ var ArcaneTabs = ({
   return /* @__PURE__ */ jsxRuntime.jsx(
     "div",
     {
-      className: `flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-cyberdark border border-slate-200 dark:border-cyberborder font-mono text-xs overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden max-w-full ${className}`,
+      className: `flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-cyberdark border border-slate-200/80 dark:border-white/[0.07] font-mono text-xs overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden max-w-full ${className}`,
       children: tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return /* @__PURE__ */ jsxRuntime.jsxs(
@@ -932,7 +934,7 @@ var DEFAULT_INPUTS = [
     icon: "Droplets",
     color: "text-cyan-400",
     bgGradient: "from-cyan-900/80 via-blue-950 to-slate-950",
-    borderColor: "border-cyan-400/80 shadow-cyan-500/40",
+    borderColor: "border-white/15 hover:border-cyan-400/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]",
     strokeColor: "#06b6d4",
     num: "02",
     specs: {
@@ -950,7 +952,7 @@ var DEFAULT_INPUTS = [
     icon: "Sparkles",
     color: "text-purple-400",
     bgGradient: "from-purple-900/80 via-indigo-950 to-slate-950",
-    borderColor: "border-purple-400/80 shadow-purple-500/40",
+    borderColor: "border-white/15 hover:border-purple-400/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]",
     strokeColor: "#a855f7",
     num: "03",
     specs: {
@@ -968,7 +970,7 @@ var DEFAULT_INPUTS = [
     icon: "Flame",
     color: "text-rose-400",
     bgGradient: "from-rose-900/80 via-red-950 to-slate-950",
-    borderColor: "border-rose-400/80 shadow-rose-500/40",
+    borderColor: "border-white/15 hover:border-rose-400/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]",
     strokeColor: "#f43f5e",
     num: "04",
     specs: {
@@ -986,7 +988,7 @@ var DEFAULT_INPUTS = [
     icon: "Sun",
     color: "text-amber-400",
     bgGradient: "from-amber-900/80 via-yellow-950 to-slate-950",
-    borderColor: "border-amber-400/80 shadow-amber-500/40",
+    borderColor: "border-white/15 hover:border-amber-400/50 shadow-[0_4px_20px_rgba(0,0,0,0.5)]",
     strokeColor: "#fbbf24",
     num: "05",
     specs: {
@@ -1063,31 +1065,31 @@ var TitaniaReactor = ({
     let strokeColor = "#a855f7";
     let color = "text-purple-400";
     let bgGradient = "from-purple-900/80 via-indigo-950 to-slate-950";
-    let borderColor = "border-purple-400/80 shadow-purple-500/40";
+    let borderColor = "border-white/15 hover:border-purple-400/40 shadow-[0_4px_20px_rgba(0,0,0,0.5)]";
     if (cat.includes("image") || cat.includes("diffusion") || srv.name.toLowerCase().includes("image")) {
       icon = "Palette";
       strokeColor = "#f43f5e";
       color = "text-rose-400";
       bgGradient = "from-rose-900/80 via-red-950 to-slate-950";
-      borderColor = "border-rose-400/80 shadow-rose-500/40";
+      borderColor = "border-white/15 hover:border-rose-400/40 shadow-[0_4px_20px_rgba(0,0,0,0.5)]";
     } else if (cat.includes("agent") || cat.includes("hub") || cat.includes("web") || srv.name.toLowerCase().includes("qwen") || srv.name.toLowerCase().includes("code")) {
       icon = "Code2";
       strokeColor = "#06b6d4";
       color = "text-cyan-400";
       bgGradient = "from-cyan-900/80 via-blue-950 to-slate-950";
-      borderColor = "border-cyan-400/80 shadow-cyan-500/40";
+      borderColor = "border-white/15 hover:border-cyan-400/40 shadow-[0_4px_20px_rgba(0,0,0,0.5)]";
     } else if (cat.includes("bot") || cat.includes("telegram") || cat.includes("discord")) {
       icon = "Bot";
       strokeColor = "#fbbf24";
       color = "text-amber-400";
       bgGradient = "from-amber-900/80 via-yellow-950 to-slate-950";
-      borderColor = "border-amber-400/80 shadow-amber-500/40";
+      borderColor = "border-white/15 hover:border-amber-400/40 shadow-[0_4px_20px_rgba(0,0,0,0.5)]";
     } else if (index % 3 === 1) {
       icon = "Code2";
       strokeColor = "#06b6d4";
       color = "text-cyan-400";
       bgGradient = "from-cyan-900/80 via-blue-950 to-slate-950";
-      borderColor = "border-cyan-400/80 shadow-cyan-500/40";
+      borderColor = "border-white/15 hover:border-cyan-400/40 shadow-[0_4px_20px_rgba(0,0,0,0.5)]";
     }
     return { icon, strokeColor, color, bgGradient, borderColor };
   };
@@ -1300,7 +1302,7 @@ var TitaniaReactor = ({
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute top-3 right-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none", children: "[SEC-REV-A] \u2510" }),
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute bottom-3 left-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none", children: "\u2514 [QUANTUM_GRID]" }),
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute bottom-3 right-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none", children: "[CHAMBER_SYNC] \u2518" }),
-    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col lg:flex-row items-start lg:items-center justify-between pb-4 border-b border-slate-200 dark:border-purple-500/20 gap-4 min-w-0", children: [
+    /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col lg:flex-row items-start lg:items-center justify-between pb-4 border-b border-slate-200/80 dark:border-white/[0.07] gap-4 min-w-0", children: [
       /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-start sm:items-center gap-3 min-w-0 flex-1", children: [
         /* @__PURE__ */ jsxRuntime.jsx("div", { className: "w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/50 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 shrink-0 mt-1 sm:mt-0", children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Atom", size: 22, glow: "purple" }) }),
         /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "min-w-0 flex-1", children: [
@@ -1322,7 +1324,7 @@ var TitaniaReactor = ({
               setDragKey((k) => k + 1);
               setTimeout(() => updateSvgPaths(), 80);
             },
-            className: "px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-purple-950/60 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 text-[10px] font-bold flex items-center gap-1.5 transition-colors shadow-sm",
+            className: "px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.05] dark:hover:bg-white/[0.09] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/[0.1] text-[10px] font-bold flex items-center gap-1.5 transition-colors shadow-sm",
             title: "Restablecer orbes a sus posiciones gravitacionales originales",
             children: [
               /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "RefreshCw", size: 11 }),
@@ -1341,7 +1343,7 @@ var TitaniaReactor = ({
       "div",
       {
         ref: containerRef,
-        className: "relative w-full max-w-full min-h-[440px] sm:min-h-[480px] lg:min-h-[550px] bg-gradient-to-b from-slate-200/30 via-slate-200/10 to-transparent dark:from-[#050914] dark:via-[#080e22] dark:to-[#040711] rounded-3xl my-6 overflow-hidden border border-slate-200 dark:border-purple-500/25 flex flex-col lg:flex-row items-center justify-between p-4 lg:p-8 select-none shadow-2xl",
+        className: "relative w-full max-w-full min-h-[440px] sm:min-h-[480px] lg:min-h-[550px] bg-gradient-to-b from-slate-200/30 via-slate-200/10 to-transparent dark:from-[#050914] dark:via-[#080e22] dark:to-[#040711] rounded-3xl my-6 overflow-hidden border border-slate-200/80 dark:border-white/[0.08] flex flex-col lg:flex-row items-center justify-between p-4 lg:p-8 select-none shadow-2xl",
         children: [
           /* @__PURE__ */ jsxRuntime.jsx("canvas", { ref: canvasRef, className: "absolute inset-0 w-full h-full pointer-events-none z-0" }),
           /* @__PURE__ */ jsxRuntime.jsxs("svg", { className: "absolute inset-0 w-full h-full pointer-events-none z-10 hidden lg:block", children: [
@@ -1411,8 +1413,11 @@ var TitaniaReactor = ({
                   framerMotion.motion.div,
                   {
                     ref: (el) => leftOrbsRef.current[idx] = el,
-                    whileHover: { scale: 1.2, rotate: 6 },
-                    whileTap: { scale: 0.92 },
+                    whileHover: {
+                      scale: 1.1,
+                      transition: { type: "spring", stiffness: 350, damping: 22, mass: 0.6 }
+                    },
+                    whileTap: { scale: 0.94 },
                     onHoverStart: () => {
                       playCue("click");
                       setHoveredOrbId(c.id);
@@ -1428,11 +1433,11 @@ var TitaniaReactor = ({
                         technicalSpecs: c.specs
                       });
                     },
-                    className: `w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border-2 bg-gradient-to-br ${c.bgGradient} ${c.borderColor} flex items-center justify-center cursor-pointer shadow-xl relative transition-all duration-300 ${isHovered ? "ring-4 ring-purple-500/60 shadow-2xl" : ""}`,
+                    className: `w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_6px_20px_rgba(0,0,0,0.5)] relative transition-all duration-300 ${isHovered ? "shadow-[0_0_20px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
                     children: [
-                      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/20 animate-[spin_15s_linear_infinite]" }),
+                      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite]" }),
                       /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: c.icon, size: 20, glow: c.id === "lumi" ? "gold" : c.id === "plasma" ? "purple" : c.id === "ignis" ? "rose" : c.id === "geo" ? "emerald" : "cyan" }),
-                      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full text-[8px] font-mono font-black bg-black/80 text-white border border-current/40", children: c.num })
+                      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full text-[8px] font-mono font-bold bg-black/80 text-slate-300 border border-white/10", children: c.num })
                     ]
                   }
                 ),
@@ -1461,9 +1466,9 @@ var TitaniaReactor = ({
           ] }),
           /* @__PURE__ */ jsxRuntime.jsxs("div", { ref: coreRef, className: "relative z-20 flex flex-col items-center my-6 lg:my-0", children: [
             /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center", children: [
-              /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-0 rounded-full border-2 border-dashed border-cyan-500/30 animate-[spin_32s_linear_infinite]" }),
-              /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-6 rounded-full border-2 border-purple-500/40 animate-[spin_22s_linear_infinite_reverse]" }),
-              /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-12 rounded-full border border-lumigold/60 animate-[spin_14s_linear_infinite]" }),
+              /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-0 rounded-full border border-dashed border-white/[0.12] animate-[spin_40s_linear_infinite]" }),
+              /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-6 rounded-full border border-dashed border-purple-400/25 animate-[spin_28s_linear_infinite_reverse]" }),
+              /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-12 rounded-full border border-amber-400/25 animate-[spin_20s_linear_infinite]" }),
               /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-14 rounded-full bg-gradient-to-tr from-purple-600/35 via-indigo-500/25 to-amber-500/35 blur-2xl animate-pulse" }),
               /* @__PURE__ */ jsxRuntime.jsx(
                 framerMotion.motion.div,
@@ -1553,10 +1558,20 @@ var TitaniaReactor = ({
                     ref: (el) => rightOrbsRef.current[idx] = el,
                     drag: true,
                     dragConstraints: containerRef,
-                    dragElastic: 0.15,
-                    whileHover: { scale: 1.18 },
-                    whileDrag: { scale: 1.28, zIndex: 60 },
-                    whileTap: { scale: 0.92 },
+                    dragElastic: 0.08,
+                    whileHover: {
+                      scale: 1.1,
+                      transition: { type: "spring", stiffness: 350, damping: 22, mass: 0.6 }
+                    },
+                    whileDrag: {
+                      scale: 1.18,
+                      zIndex: 60,
+                      transition: { type: "spring", stiffness: 350, damping: 25, mass: 0.6 }
+                    },
+                    whileTap: {
+                      scale: 0.94,
+                      transition: { type: "spring", stiffness: 400, damping: 25 }
+                    },
                     onDragStart: () => {
                       isDraggingRef.current = true;
                       setDraggingOrbId(srv.id);
@@ -1568,7 +1583,7 @@ var TitaniaReactor = ({
                       setTimeout(() => {
                         isDraggingRef.current = false;
                         updateSvgPaths();
-                      }, 300);
+                      }, 250);
                     },
                     onHoverStart: () => {
                       if (!draggingOrbId) {
@@ -1592,12 +1607,15 @@ var TitaniaReactor = ({
                         }
                       });
                     },
-                    className: `w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 bg-gradient-to-br ${meta.bgGradient} ${meta.borderColor} flex items-center justify-center cursor-grab active:cursor-grabbing shadow-xl relative select-none transition-shadow duration-300 ${isRunning ? "ring-4 ring-emerald-500/50 shadow-emerald-500/30" : isHovered ? "ring-4 ring-cyan-500/60 shadow-2xl" : ""}`,
+                    className: `w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_8px_25px_rgba(0,0,0,0.5)] relative select-none transition-all duration-300 ${isHovered ? "shadow-[0_0_25px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
                     title: "\u2726 Arrastra para mover el portal libremente por el reactor // Doble clic para inspeccionar",
                     children: [
-                      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/20 animate-[spin_18s_linear_infinite_reverse]" }),
+                      /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite_reverse]" }),
                       /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: meta.icon, size: 22, glow: isRunning ? "emerald" : "purple" }),
-                      isRunning && /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-black animate-ping" })
+                      isRunning ? /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "absolute -top-1 -right-1 flex h-3 w-3", children: [
+                        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" }),
+                        /* @__PURE__ */ jsxRuntime.jsx("span", { className: "relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-[#070b18]" })
+                      ] }) : /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-slate-600/80 border-2 border-[#070b18]" })
                     ]
                   },
                   `right-orb-${srv.id}-${dragKey}`
@@ -2743,7 +2761,7 @@ var HistogramWave = ({
     return path;
   };
   const width = 320;
-  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `p-3.5 rounded-2xl bg-[#040816] border border-white/10 font-mono select-none ${className}`, children: [
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `p-3.5 rounded-2xl bg-slate-50 dark:bg-[#060a18]/90 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl font-mono select-none ${className}`, children: [
     /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-wrap items-center justify-between pb-2 mb-2 border-b border-white/10 text-[10px] gap-2", children: [
       /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-bold text-slate-300 uppercase tracking-wider truncate", children: label }),
       /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex items-center gap-2 shrink-0", children: channels.map((c) => /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "flex items-center gap-1 text-[9px]", style: { color: c.color }, children: [
@@ -2780,7 +2798,7 @@ var NodePipeline = ({
   nodes = DEFAULT_NODES,
   className = ""
 }) => {
-  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `p-4 sm:p-6 rounded-3xl bg-[#050918]/90 border border-purple-500/25 shadow-2xl font-mono select-none ${className}`, children: [
+  return /* @__PURE__ */ jsxRuntime.jsxs("div", { className: `p-4 sm:p-6 rounded-3xl bg-[#070c1a]/85 dark:bg-[#060a18]/90 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl shadow-2xl font-mono select-none ${className}`, children: [
     /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-wrap items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/10 gap-2", children: [
       /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-xs font-black font-heading tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent truncate", children: title }),
       /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "px-2.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-500/40 shrink-0", children: [
@@ -2792,8 +2810,8 @@ var NodePipeline = ({
     /* @__PURE__ */ jsxRuntime.jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 relative", children: nodes.map((n) => /* @__PURE__ */ jsxRuntime.jsx(
       framerMotion.motion.div,
       {
-        whileHover: { scale: 1.02, y: -2 },
-        className: "p-3.5 sm:p-4 rounded-2xl bg-[#090f26] border border-white/10 hover:border-cyan-400/50 transition-all duration-200 shadow-lg min-w-0",
+        whileHover: { scale: 1.015, y: -2, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } },
+        className: "p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#0b1126]/80 border border-slate-200/60 dark:border-white/[0.07] hover:border-slate-300 dark:hover:border-white/20 transition-all duration-200 shadow-lg min-w-0",
         children: /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-3 min-w-0", children: [
           /* @__PURE__ */ jsxRuntime.jsx("div", { className: "w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center shrink-0", children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: n.icon, size: 18, glow: n.tone }) }),
           /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "min-w-0 flex-1", children: [

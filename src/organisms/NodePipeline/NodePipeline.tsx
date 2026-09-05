@@ -30,7 +30,7 @@ export const NodePipeline: React.FC<NodePipelineProps> = ({
   className = ''
 }) => {
   return (
-    <div className={`p-4 sm:p-6 rounded-3xl bg-[#050918]/90 border border-purple-500/25 shadow-2xl font-mono select-none ${className}`}>
+    <div className={`p-4 sm:p-6 rounded-3xl bg-[#070c1a]/85 dark:bg-[#060a18]/90 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl shadow-2xl font-mono select-none ${className}`}>
       <div className="flex flex-wrap items-center justify-between pb-3 mb-4 sm:mb-5 border-b border-white/10 gap-2">
         <span className="text-xs font-black font-heading tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent truncate">
           {title}
@@ -44,8 +44,8 @@ export const NodePipeline: React.FC<NodePipelineProps> = ({
         {nodes.map((n) => (
           <motion.div
             key={n.id}
-            whileHover={{ scale: 1.02, y: -2 }}
-            className="p-3.5 sm:p-4 rounded-2xl bg-[#090f26] border border-white/10 hover:border-cyan-400/50 transition-all duration-200 shadow-lg min-w-0"
+            whileHover={{ scale: 1.015, y: -2, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } }}
+            className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-[#0b1126]/80 border border-slate-200/60 dark:border-white/[0.07] hover:border-slate-300 dark:hover:border-white/20 transition-all duration-200 shadow-lg min-w-0"
           >
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center shrink-0">

@@ -36,7 +36,7 @@ export const HistogramWave: React.FC<HistogramWaveProps> = ({
   const width = 320;
 
   return (
-    <div className={`p-3.5 rounded-2xl bg-[#040816] border border-white/10 font-mono select-none ${className}`}>
+    <div className={`p-3.5 rounded-2xl bg-slate-50 dark:bg-[#060a18]/90 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-xl font-mono select-none ${className}`}>
       <div className="flex flex-wrap items-center justify-between pb-2 mb-2 border-b border-white/10 text-[10px] gap-2">
         <span className="font-bold text-slate-300 uppercase tracking-wider truncate">{label}</span>
         <div className="flex items-center gap-2 shrink-0">
