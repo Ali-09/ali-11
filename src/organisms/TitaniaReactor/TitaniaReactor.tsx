@@ -165,8 +165,8 @@ const DEFAULT_FALLBACK_SERVICES: DynamicServiceItem[] = [
 ];
 
 export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
-  title = 'TITANIA Q-DRIVE',
-  subtitle = 'GRADIENT FUSION CHAMBER // MULTI-PROPULSION AI RESONANCE CORE',
+  title = 'REACTOR TITANIA',
+  subtitle = 'Núcleo de Resonancia e Inferencia IA',
   frequency = '13.3 GHz // CUDA SYNCHRONIZED',
   gamingReady = true,
   onCoreClick,
@@ -545,37 +545,25 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
 
   return (
     <div className="theme-card rounded-3xl p-4 sm:p-6 lg:p-8 relative overflow-hidden shadow-2xl">
-      {/* HUD Blueprint Technical Brackets */}
-      <div className="absolute top-3 left-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none">┌ [SYS-TON-01]</div>
-      <div className="absolute top-3 right-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none">[SEC-REV-A] ┐</div>
-      <div className="absolute bottom-3 left-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none">└ [QUANTUM_GRID]</div>
-      <div className="absolute bottom-3 right-3 text-purple-400/50 dark:text-cyan-400/40 font-mono text-[11px] select-none">[CHAMBER_SYNC] ┘</div>
 
-      {/* 1. MASTER HEADER */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between pb-4 border-b border-slate-200/80 dark:border-white/[0.07] gap-4 min-w-0">
-        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/50 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 shrink-0 mt-1 sm:mt-0">
-            <Icon name="Atom" size={22} glow="purple" />
+
+      {/* 1. MASTER HEADER (Limpio, elegante y cinematográfico) */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-200/80 dark:border-white/[0.07] gap-3 min-w-0">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 border border-white/20 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 shrink-0">
+            <Icon name="Atom" size={20} glow="purple" />
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="text-lg sm:text-xl font-black font-heading tracking-wider bg-gradient-to-r from-purple-600 via-indigo-500 to-amber-500 dark:from-purple-300 dark:via-cyan-200 dark:to-amber-300 bg-clip-text text-transparent truncate">
-                {title}
-              </h2>
-              <span className="px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-mono font-bold bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-cyan-300 border border-purple-300 dark:border-purple-800 tracking-widest uppercase shadow-sm shrink-0">
-                ALCHEMICAL RESONANCE BLUEPRINT
-              </span>
-            </div>
-            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1 truncate">
+          <div className="min-w-0">
+            <h2 className="text-lg sm:text-xl font-black font-heading tracking-wider bg-gradient-to-r from-purple-600 via-indigo-500 to-amber-500 dark:from-purple-300 dark:via-cyan-200 dark:to-amber-300 bg-clip-text text-transparent truncate">
+              {title}
+            </h2>
+            <p className="text-xs font-mono text-slate-500 dark:text-slate-400 truncate">
               {subtitle}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center justify-between sm:justify-end gap-3 font-mono text-xs w-full lg:w-auto shrink-0 flex-wrap">
-          <span className="text-[11px] text-slate-400 hidden xl:inline">
-            ✦ Arrastra los orbes de servicios para reordenar libremente // Doble clic para telemetría
-          </span>
+        <div className="flex items-center gap-2 font-mono text-xs w-full sm:w-auto justify-between sm:justify-end shrink-0">
           <button
             type="button"
             onClick={() => {
@@ -589,10 +577,9 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
             <Icon name="RefreshCw" size={11} />
             <span>REORGANIZAR</span>
           </button>
-          <div className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#070c18] border border-slate-200 dark:border-purple-500/30 flex items-center gap-2 shadow-inner shrink-0">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-            <span className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs">FREQUENCY:</span>
-            <span className="font-bold text-emerald-600 dark:text-emerald-400 text-[10px] sm:text-xs">{frequency}</span>
+          <div className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] flex items-center gap-2 text-xs shrink-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="font-bold text-emerald-600 dark:text-emerald-400">{frequency}</span>
           </div>
         </div>
       </div>
@@ -664,11 +651,9 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
 
         {/* COLUMNA IZQUIERDA: 5 SELLOS ELEMENTALES CIRCULARES CON ALINEACIÓN VERTICAL PERFECTA */}
         <div className="flex flex-col items-center lg:items-start justify-center z-20 font-mono h-full py-2">
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <span className="text-cyan-500 font-black text-xs">[INPUTS]</span>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-cyan-300/80 uppercase tracking-widest">
-              5 ELEMENTAL SEALS
-            </span>
+          <div className="flex items-center gap-2 mb-3 px-1 text-xs font-mono text-slate-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <span className="font-bold tracking-wider uppercase text-slate-300">ENTRADAS ({inputs.length})</span>
           </div>
 
           <div className="flex flex-row lg:flex-col items-center justify-center gap-3 sm:gap-3.5 flex-wrap">
@@ -676,7 +661,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
               const isHovered = hoveredOrbId === c.id;
               return (
                 <div key={c.id} className="relative flex items-center group">
-                  {/* Orbe Circular Elemental (Draggable, física fluida sin retardo y cristal de obsidiana) */}
+                  {/* Orbe Circular Elemental con Tooltip Co-localizado */}
                   <motion.div
                     key={`left-orb-${c.id}-${dragKey}`}
                     ref={(el) => (leftOrbsRef.current[idx] = el)}
@@ -731,25 +716,25 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                     <span className="absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full text-[8px] font-mono font-bold bg-black/80 text-slate-300 border border-white/10">
                       {c.num}
                     </span>
-                  </motion.div>
 
-                  {/* Tooltip Holográfico en Hover */}
-                  <AnimatePresence>
-                    {isHovered && !draggingOrbId && (
-                      <motion.div
-                        initial={{ opacity: 0, x: -10, scale: 0.9 }}
-                        animate={{ opacity: 1, x: 12, scale: 1 }}
-                        exit={{ opacity: 0, x: -10, scale: 0.9 }}
-                        className="hidden lg:block absolute left-full top-1/2 -translate-y-1/2 z-40 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-purple-400/50 px-3.5 py-2 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none"
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs font-black font-heading ${c.color}`}>{c.fullName}</span>
-                          <span className="text-[9px] font-mono text-slate-400">[{c.num}]</span>
-                        </div>
-                        <p className="text-[10px] text-slate-300 font-mono mt-0.5">{c.sub}</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                    {/* Tooltip Holográfico que sigue fielmente al orbe */}
+                    <AnimatePresence>
+                      {isHovered && !draggingOrbId && (
+                        <motion.div
+                          initial={{ opacity: 0, x: -10, scale: 0.9 }}
+                          animate={{ opacity: 1, x: 14, scale: 1 }}
+                          exit={{ opacity: 0, x: -10, scale: 0.9 }}
+                          className="hidden lg:block absolute left-full top-1/2 -translate-y-1/2 z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none text-left"
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-black font-heading ${c.color}`}>{c.fullName}</span>
+                            <span className="text-[9px] font-mono text-slate-400">[{c.num}]</span>
+                          </div>
+                          <p className="text-[10px] text-slate-300 font-mono mt-0.5">{c.sub}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
                 </div>
               );
             })}
@@ -801,37 +786,19 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
             </motion.div>
           </div>
 
-          <div className="text-center mt-2 font-mono">
-            <h3 className="text-sm sm:text-base font-black font-heading tracking-widest text-slate-900 dark:text-white bg-gradient-to-r from-purple-400 via-cyan-200 to-amber-300 bg-clip-text text-transparent">
-              GRIMORIUM QUANTUM RESONANCE CORE
+          <div className="text-center mt-3 font-mono">
+            <h3 className="text-xs sm:text-sm font-bold font-heading tracking-widest text-slate-600 dark:text-slate-300">
+              NÚCLEO CUÁNTICO
             </h3>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-cyan-400 tracking-wider block mt-0.5">
-              NVIDIA RTX 5080 // 16GB GDDR7 // CUDA 13.3
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2.5 max-w-md font-mono text-[9px]">
-            <span className="px-2.5 py-0.5 rounded-full bg-slate-200/70 dark:bg-[#070d1e] border border-slate-300 dark:border-purple-500/30 text-slate-600 dark:text-slate-300 font-semibold shadow-sm">
-              [1] RESONATOR CROWN
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-slate-200/70 dark:bg-[#070d1e] border border-slate-300 dark:border-purple-500/30 text-slate-600 dark:text-slate-300 font-semibold shadow-sm">
-              [2] FLUX SPIRAL
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-slate-200/70 dark:bg-[#070d1e] border border-slate-300 dark:border-purple-500/30 text-slate-600 dark:text-slate-300 font-semibold shadow-sm">
-              [3] VENT CORE
-            </span>
-            <span className="px-2.5 py-0.5 rounded-full bg-slate-200/70 dark:bg-[#070d1e] border border-slate-300 dark:border-purple-500/30 text-slate-600 dark:text-slate-300 font-semibold shadow-sm">
-              [4] FUSION CHAMBER
-            </span>
           </div>
         </div>
 
         {/* COLUMNA DERECHA: NODOS ORBES 100% DINÁMICOS CON ALINEACIÓN VERTICAL EQUILIBRADA */}
         <div className="flex flex-col items-center lg:items-end justify-center z-20 font-mono h-full py-2">
-          <div className="flex items-center gap-2 mb-3 px-1">
-            <span className="text-purple-500 font-black text-xs">[OUTPUTS]</span>
-            <span className="text-[11px] font-bold text-slate-500 dark:text-purple-300/80 uppercase tracking-widest">
-              DIRECTED THRUST ({normalizedServices.length})
+          <div className="flex items-center gap-2 mb-3 px-1 text-xs font-mono text-slate-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+            <span className="font-bold tracking-wider uppercase text-slate-300">
+              SERVICIOS ({normalizedServices.filter((s) => s.status === 'running').length}/{normalizedServices.length} ONLINE)
             </span>
           </div>
 
@@ -843,29 +810,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
 
               return (
                 <div key={srv.id} className="relative flex items-center group">
-                  {/* Tooltip Holográfico en Hover */}
-                  <AnimatePresence>
-                    {isHovered && !draggingOrbId && (
-                      <motion.div
-                        initial={{ opacity: 0, x: 10, scale: 0.9 }}
-                        animate={{ opacity: 1, x: -12, scale: 1 }}
-                        exit={{ opacity: 0, x: 10, scale: 0.9 }}
-                        className="hidden lg:block absolute right-full top-1/2 -translate-y-1/2 z-40 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-cyan-400/50 px-3.5 py-2 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none text-right"
-                      >
-                        <div className="flex items-center justify-end gap-2">
-                          <span className={`text-xs font-black font-heading ${meta.color}`}>{srv.name}</span>
-                          <span className={`text-[9px] font-mono font-bold ${isRunning ? 'text-emerald-400' : 'text-slate-400'}`}>
-                            {isRunning ? '● ONLINE' : '○ STANDBY'}
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-slate-300 font-mono mt-0.5">
-                          {srv.port ? `PUERTO :${srv.port}` : 'PROCESO'} {srv.models?.length ? `// ${srv.models.join(', ')}` : ''}
-                        </p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Orbe Circular Dinámico (Física fluida, resorte orgánico y gema de estado) */}
+                  {/* Orbe Circular Dinámico con Tooltip Co-localizado */}
                   <motion.div
                     key={`right-orb-${srv.id}-${dragKey}`}
                     ref={(el) => (rightOrbsRef.current[idx] = el)}
@@ -933,6 +878,28 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                     ) : (
                       <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-slate-600/80 border-2 border-[#070b18]" />
                     )}
+
+                    {/* Tooltip Holográfico que sigue fielmente al orbe */}
+                    <AnimatePresence>
+                      {isHovered && !draggingOrbId && (
+                        <motion.div
+                          initial={{ opacity: 0, x: 10, scale: 0.9 }}
+                          animate={{ opacity: 1, x: -14, scale: 1 }}
+                          exit={{ opacity: 0, x: 10, scale: 0.9 }}
+                          className="hidden lg:block absolute right-full top-1/2 -translate-y-1/2 z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none text-right"
+                        >
+                          <div className="flex items-center justify-end gap-2">
+                            <span className={`text-xs font-black font-heading ${meta.color}`}>{srv.name}</span>
+                            <span className={`text-[9px] font-mono font-bold ${isRunning ? 'text-emerald-400' : 'text-slate-400'}`}>
+                              {isRunning ? '● ONLINE' : '○ STANDBY'}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-slate-300 font-mono mt-0.5">
+                            {srv.port ? `PUERTO :${srv.port}` : 'PROCESO'} {srv.models?.length ? `// ${srv.models.join(', ')}` : ''}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 </div>
               );
@@ -941,23 +908,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
         </div>
       </div>
 
-      {/* 3. ALCHEMICAL ENERGY EQUATION BAR */}
-      <div className="py-3 px-5 rounded-2xl bg-gradient-to-r from-slate-200/50 via-slate-200/30 to-slate-200/50 dark:from-[#080e22] dark:via-[#0c1432] dark:to-[#080e22] border border-slate-200 dark:border-purple-500/30 flex flex-wrap items-center justify-center gap-2 text-xs font-mono mb-6 shadow-md">
-        <span className="text-emerald-500 font-bold">AEROCELL</span>
-        <span className="text-slate-400">+</span>
-        <span className="text-cyan-400 font-bold">HYDROCORE</span>
-        <span className="text-purple-400 font-bold">PLASMCORE</span>
-        <span className="text-rose-400 font-bold">THERMCORE</span>
-        <span className="text-amber-400 font-bold">LUMICORE</span>
-        <span className="text-cyan-400 font-bold mx-2">──────▶</span>
-        <span className="px-3 py-1 rounded-full bg-purple-600/30 text-purple-300 font-bold border border-purple-400/50 shadow-sm">
-          RESONANCE CHAMBER (FUSION)
-        </span>
-        <span className="text-cyan-400 font-bold mx-2">──────▶</span>
-        <span className="px-3 py-1 rounded-full bg-amber-600/30 text-amber-300 font-bold border border-amber-400/50 shadow-sm">
-          DIRECTED QUANTUM THRUST (:80)
-        </span>
-      </div>
+
 
       {/* 4. MODAL DE INSPECCIÓN EN DOBLE CLIC */}
       <AnimatePresence>
