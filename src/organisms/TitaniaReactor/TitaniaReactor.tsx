@@ -182,6 +182,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
   const [hoveredOrbId, setHoveredOrbId] = useState<string | null>(null);
   const [draggingOrbId, setDraggingOrbId] = useState<string | null>(null);
   const [dragKey, setDragKey] = useState<number>(0);
+  const isDraggingRef = useRef(false);
   const [inspectDetail, setInspectDetail] = useState<{
     id: string;
     name: string;
@@ -319,6 +320,57 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
     setConduitPaths({ left: leftPaths, right: rightPaths });
   };
 
+  const updateAllConduitsDirect = () => {
+    if (!containerRef.current || !coreRef.current) return;
+    const contRect = containerRef.current.getBoundingClientRect();
+    const coreRect = coreRef.current.getBoundingClientRect();
+    const imgEl = coreRef.current.querySelector('img');
+    const imgRect = imgEl ? imgEl.getBoundingClientRect() : coreRect;
+    const coreCenterX = imgRect.left - contRect.left + imgRect.width / 2;
+    const coreCenterY = imgRect.top - contRect.top + imgRect.height / 2 + 12;
+
+    // Direct DOM sync for right-side services (zero React re-render overhead, 0ms lag)
+    rightOrbsRef.current.forEach((orb, idx) => {
+      if (!orb) return;
+      const pathEl = document.getElementById(`right-path-${idx}`);
+      if (!pathEl) return;
+      const orbRect = orb.getBoundingClientRect();
+      const orbCenterX = orbRect.left - contRect.left + orbRect.width / 2;
+      const orbCenterY = orbRect.top - contRect.top + orbRect.height / 2;
+
+      const isRightOfCore = orbCenterX >= coreCenterX;
+      const x1 = isRightOfCore ? coreCenterX + (imgRect.width * 0.38) : coreCenterX - (imgRect.width * 0.38);
+      const y1 = coreCenterY;
+      const x2 = isRightOfCore ? orbRect.left - contRect.left : orbRect.right - contRect.left;
+      const y2 = orbCenterY;
+      const cpX = (x1 + x2) / 2;
+
+      const d = `M ${x1} ${y1} C ${cpX} ${y1}, ${cpX} ${y2}, ${x2} ${y2}`;
+      pathEl.setAttribute('d', d);
+    });
+
+    // Direct DOM sync for left-side inputs
+    leftOrbsRef.current.forEach((orb, idx) => {
+      if (!orb) return;
+      const pathEl = document.getElementById(`left-path-${idx}`);
+      if (!pathEl) return;
+      const orbRect = orb.getBoundingClientRect();
+      const orbCenterX = orbRect.left - contRect.left + orbRect.width / 2;
+      const orbCenterY = orbRect.top - contRect.top + orbRect.height / 2;
+
+      const isLeftOfCore = orbCenterX <= coreCenterX;
+      const x1 = isLeftOfCore ? orbRect.right - contRect.left : orbRect.left - contRect.left;
+      const y1 = orbCenterY;
+      const x2 = isLeftOfCore ? coreCenterX - (imgRect.width * 0.38) : coreCenterX + (imgRect.width * 0.38);
+      const y2 = coreCenterY;
+      const cpX = (x1 + x2) / 2;
+
+      const d = `M ${x1} ${y1} C ${cpX} ${y1}, ${cpX} ${y2}, ${x2} ${y2}`;
+      pathEl.setAttribute('d', d);
+    });
+  };
+
+
   useLayoutEffect(() => {
     updateSvgPaths();
     const handleResize = () => updateSvgPaths();
@@ -448,6 +500,10 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
         ctx.shadowBlur = 0;
       });
 
+      // Si hay un orbe siendo arrastrado o rebotando con inercia, sincronizar la geometría SVG a 60/120fps en hardware
+      if (isDraggingRef.current) {
+        updateAllConduitsDirect();
+      }
       animId = requestAnimationFrame(render);
     };
 
@@ -543,15 +599,16 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                 stroke={p.color}
                 strokeWidth={p.active ? 3.5 : 2}
                 strokeDasharray="6,6"
-                className={`transition-all duration-300 ${p.active ? 'opacity-100' : 'opacity-65'}`}
+                className={`transition-opacity duration-300 ${p.active ? 'opacity-100' : 'opacity-65'}`}
                 filter={p.active ? 'url(#arcane-laser-glow)' : undefined}
               />
               <circle r={p.active ? 5 : 3.5} fill={p.color} filter="url(#arcane-laser-glow)">
                 <animateMotion
                   dur={p.active ? '1.3s' : '2.6s'}
                   repeatCount="indefinite"
-                  path={p.d}
-                />
+                >
+                  <mpath href={`#left-path-${idx}`} />
+                </animateMotion>
               </circle>
             </g>
           ))}
@@ -566,15 +623,16 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                 stroke={p.color}
                 strokeWidth={p.active ? 3.5 : 2}
                 strokeDasharray="6,6"
-                className={`transition-all duration-300 ${p.active ? 'opacity-100' : 'opacity-65'}`}
+                className={`transition-opacity duration-300 ${p.active ? 'opacity-100' : 'opacity-65'}`}
                 filter={p.active ? 'url(#arcane-laser-glow)' : undefined}
               />
               <circle r={p.active ? 5 : 3.5} fill={p.color} filter="url(#arcane-laser-glow)">
                 <animateMotion
                   dur={p.active ? '1.1s' : '2.4s'}
                   repeatCount="indefinite"
-                  path={p.d}
-                />
+                >
+                  <mpath href={`#right-path-${idx}`} />
+                </animateMotion>
               </circle>
             </g>
           ))}
@@ -768,13 +826,18 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                     whileDrag={{ scale: 1.28, zIndex: 60 }}
                     whileTap={{ scale: 0.92 }}
                     onDragStart={() => {
+                      isDraggingRef.current = true;
                       setDraggingOrbId(srv.id);
                       playCue('quantum_hum');
                     }}
-                    onDrag={() => updateSvgPaths()}
+                    onDrag={() => updateAllConduitsDirect()}
                     onDragEnd={() => {
                       setDraggingOrbId(null);
-                      updateSvgPaths();
+                      // Mantener sincronía de la línea mientras se asienta el resorte elástico (300ms)
+                      setTimeout(() => {
+                        isDraggingRef.current = false;
+                        updateSvgPaths();
+                      }, 300);
                     }}
                     onHoverStart={() => {
                       if (!draggingOrbId) {
