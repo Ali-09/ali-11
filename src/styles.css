@@ -120,3 +120,18 @@ html.light .theme-card:hover {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* FLUJO LÁSER DE ULTRA-ALTO RENDIMIENTO EN HARDWARE GPU */
+@keyframes conduitFlow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-conduit-flow {
+  animation: conduitFlow 1.2s linear infinite;
+  will-change: stroke-dashoffset;
+}

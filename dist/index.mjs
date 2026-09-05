@@ -1019,7 +1019,7 @@ var TitaniaReactor = ({
   const [hoveredOrbId, setHoveredOrbId] = useState(null);
   const [draggingOrbId, setDraggingOrbId] = useState(null);
   const [dragKey, setDragKey] = useState(0);
-  const isDraggingRef = useRef(false);
+  useRef(false);
   const [inspectDetail, setInspectDetail] = useState(null);
   const normalizedServices = React3.useMemo(() => {
     if (!services) return DEFAULT_FALLBACK_SERVICES;
@@ -1124,46 +1124,56 @@ var TitaniaReactor = ({
     });
     setConduitPaths({ left: leftPaths, right: rightPaths });
   };
-  const updateAllConduitsDirect = () => {
+  const dragCtxRef = useRef(null);
+  const startDragConduit = (info, idx, isRight) => {
     if (!containerRef.current || !coreRef.current) return;
     const contRect = containerRef.current.getBoundingClientRect();
     const coreRect = coreRef.current.getBoundingClientRect();
     const imgEl = coreRef.current.querySelector("img");
     const imgRect = imgEl ? imgEl.getBoundingClientRect() : coreRect;
-    const coreCenterX = imgRect.left - contRect.left + imgRect.width / 2;
-    const coreCenterY = imgRect.top - contRect.top + imgRect.height / 2 + 12;
-    rightOrbsRef.current.forEach((orb, idx) => {
-      if (!orb) return;
-      const pathEl = document.getElementById(`right-path-${idx}`);
-      if (!pathEl) return;
-      const orbRect = orb.getBoundingClientRect();
-      const orbCenterX = orbRect.left - contRect.left + orbRect.width / 2;
-      const orbCenterY = orbRect.top - contRect.top + orbRect.height / 2;
-      const isRightOfCore = orbCenterX >= coreCenterX;
-      const x1 = isRightOfCore ? coreCenterX + imgRect.width * 0.38 : coreCenterX - imgRect.width * 0.38;
-      const y1 = coreCenterY;
-      const x2 = isRightOfCore ? orbRect.left - contRect.left : orbRect.right - contRect.left;
+    const orb = rightOrbsRef.current[idx] ;
+    if (!orb) return;
+    const orbRect = orb.getBoundingClientRect();
+    dragCtxRef.current = {
+      contLeft: contRect.left,
+      contTop: contRect.top,
+      coreCenterX: imgRect.left - contRect.left + imgRect.width / 2,
+      coreCenterY: imgRect.top - contRect.top + imgRect.height / 2 + 12,
+      coreRadius: imgRect.width * 0.38,
+      initialOrbX: orbRect.left - contRect.left + orbRect.width / 2,
+      initialOrbY: orbRect.top - contRect.top + orbRect.height / 2,
+      initialPointerX: info.point.x,
+      initialPointerY: info.point.y
+    };
+    setDraggingOrbId(normalizedServices[idx]?.id || null );
+  };
+  const moveDragConduit = (info, idx, isRight) => {
+    const ctx = dragCtxRef.current;
+    if (!ctx) return;
+    const pathEl = document.getElementById(`right-path-${idx}` );
+    const glowEl = document.getElementById(`right-glow-${idx}` );
+    if (!pathEl && !glowEl) return;
+    const deltaX = info.point.x - ctx.initialPointerX;
+    const deltaY = info.point.y - ctx.initialPointerY;
+    const orbCenterX = ctx.initialOrbX + deltaX;
+    const orbCenterY = ctx.initialOrbY + deltaY;
+    {
+      const isRightOfCore = orbCenterX >= ctx.coreCenterX;
+      const x1 = isRightOfCore ? ctx.coreCenterX + ctx.coreRadius : ctx.coreCenterX - ctx.coreRadius;
+      const y1 = ctx.coreCenterY;
+      const x2 = isRightOfCore ? orbCenterX - 28 : orbCenterX + 28;
       const y2 = orbCenterY;
       const cpX = (x1 + x2) / 2;
       const d = `M ${x1} ${y1} C ${cpX} ${y1}, ${cpX} ${y2}, ${x2} ${y2}`;
-      pathEl.setAttribute("d", d);
-    });
-    leftOrbsRef.current.forEach((orb, idx) => {
-      if (!orb) return;
-      const pathEl = document.getElementById(`left-path-${idx}`);
-      if (!pathEl) return;
-      const orbRect = orb.getBoundingClientRect();
-      const orbCenterX = orbRect.left - contRect.left + orbRect.width / 2;
-      const orbCenterY = orbRect.top - contRect.top + orbRect.height / 2;
-      const isLeftOfCore = orbCenterX <= coreCenterX;
-      const x1 = isLeftOfCore ? orbRect.right - contRect.left : orbRect.left - contRect.left;
-      const y1 = orbCenterY;
-      const x2 = isLeftOfCore ? coreCenterX - imgRect.width * 0.38 : coreCenterX + imgRect.width * 0.38;
-      const y2 = coreCenterY;
-      const cpX = (x1 + x2) / 2;
-      const d = `M ${x1} ${y1} C ${cpX} ${y1}, ${cpX} ${y2}, ${x2} ${y2}`;
-      pathEl.setAttribute("d", d);
-    });
+      if (pathEl) pathEl.setAttribute("d", d);
+      if (glowEl) glowEl.setAttribute("d", d);
+    }
+  };
+  const endDragConduit = () => {
+    dragCtxRef.current = null;
+    setDraggingOrbId(null);
+    updateSvgPaths();
+    setTimeout(() => updateSvgPaths(), 150);
   };
   useLayoutEffect(() => {
     updateSvgPaths();
@@ -1261,9 +1271,6 @@ var TitaniaReactor = ({
         ctx.fill();
         ctx.shadowBlur = 0;
       });
-      if (isDraggingRef.current) {
-        updateAllConduitsDirect();
-      }
       animId = requestAnimationFrame(render);
     };
     render();
@@ -1321,15 +1328,20 @@ var TitaniaReactor = ({
         className: "relative w-full max-w-full min-h-[440px] sm:min-h-[480px] lg:min-h-[550px] bg-gradient-to-b from-slate-200/30 via-slate-200/10 to-transparent dark:from-[#050914] dark:via-[#080e22] dark:to-[#040711] rounded-3xl my-6 overflow-hidden border border-slate-200/80 dark:border-white/[0.08] flex flex-col lg:flex-row items-center justify-between p-4 lg:p-8 select-none shadow-2xl",
         children: [
           /* @__PURE__ */ jsx("canvas", { ref: canvasRef, className: "absolute inset-0 w-full h-full pointer-events-none z-0" }),
-          /* @__PURE__ */ jsxs("svg", { className: "absolute inset-0 w-full h-full pointer-events-none z-10 hidden lg:block", children: [
-            /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsxs("filter", { id: "arcane-laser-glow", x: "-20%", y: "-20%", width: "140%", height: "140%", children: [
-              /* @__PURE__ */ jsx("feGaussianBlur", { stdDeviation: "3.5", result: "blur" }),
-              /* @__PURE__ */ jsxs("feMerge", { children: [
-                /* @__PURE__ */ jsx("feMergeNode", { in: "blur" }),
-                /* @__PURE__ */ jsx("feMergeNode", { in: "SourceGraphic" })
-              ] })
-            ] }) }),
+          /* @__PURE__ */ jsxs("svg", { className: "absolute inset-0 w-full h-full pointer-events-none z-10 hidden lg:block overflow-visible", children: [
             conduitPaths.left.map((p, idx) => /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
+                "path",
+                {
+                  id: `left-glow-${idx}`,
+                  d: p.d,
+                  fill: "none",
+                  stroke: p.color,
+                  strokeWidth: p.active ? 7 : 4,
+                  strokeOpacity: p.active ? 0.25 : 0.12,
+                  strokeLinecap: "round"
+                }
+              ),
               /* @__PURE__ */ jsx(
                 "path",
                 {
@@ -1337,22 +1349,26 @@ var TitaniaReactor = ({
                   d: p.d,
                   fill: "none",
                   stroke: p.color,
-                  strokeWidth: p.active ? 3.5 : 2,
+                  strokeWidth: p.active ? 2.5 : 1.5,
                   strokeDasharray: "6,6",
-                  className: `transition-opacity duration-300 ${p.active ? "opacity-100" : "opacity-65"}`,
-                  filter: p.active ? "url(#arcane-laser-glow)" : void 0
+                  strokeLinecap: "round",
+                  className: `animate-conduit-flow ${p.active ? "opacity-100" : "opacity-60"}`
                 }
-              ),
-              /* @__PURE__ */ jsx("circle", { r: p.active ? 5 : 3.5, fill: p.color, filter: "url(#arcane-laser-glow)", children: /* @__PURE__ */ jsx(
-                "animateMotion",
-                {
-                  dur: p.active ? "1.3s" : "2.6s",
-                  repeatCount: "indefinite",
-                  children: /* @__PURE__ */ jsx("mpath", { href: `#left-path-${idx}` })
-                }
-              ) })
+              )
             ] }, `left-group-${idx}`)),
             conduitPaths.right.map((p, idx) => /* @__PURE__ */ jsxs("g", { children: [
+              /* @__PURE__ */ jsx(
+                "path",
+                {
+                  id: `right-glow-${idx}`,
+                  d: p.d,
+                  fill: "none",
+                  stroke: p.color,
+                  strokeWidth: p.active ? 7 : 4,
+                  strokeOpacity: p.active ? 0.25 : 0.12,
+                  strokeLinecap: "round"
+                }
+              ),
               /* @__PURE__ */ jsx(
                 "path",
                 {
@@ -1360,20 +1376,12 @@ var TitaniaReactor = ({
                   d: p.d,
                   fill: "none",
                   stroke: p.color,
-                  strokeWidth: p.active ? 3.5 : 2,
+                  strokeWidth: p.active ? 2.5 : 1.5,
                   strokeDasharray: "6,6",
-                  className: `transition-opacity duration-300 ${p.active ? "opacity-100" : "opacity-65"}`,
-                  filter: p.active ? "url(#arcane-laser-glow)" : void 0
+                  strokeLinecap: "round",
+                  className: `animate-conduit-flow ${p.active ? "opacity-100" : "opacity-60"}`
                 }
-              ),
-              /* @__PURE__ */ jsx("circle", { r: p.active ? 5 : 3.5, fill: p.color, filter: "url(#arcane-laser-glow)", children: /* @__PURE__ */ jsx(
-                "animateMotion",
-                {
-                  dur: p.active ? "1.1s" : "2.4s",
-                  repeatCount: "indefinite",
-                  children: /* @__PURE__ */ jsx("mpath", { href: `#right-path-${idx}` })
-                }
-              ) })
+              )
             ] }, `right-group-${idx}`))
           ] }),
           /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center lg:items-start justify-center z-20 font-mono h-full py-2", children: [
@@ -1533,32 +1541,29 @@ var TitaniaReactor = ({
                     ref: (el) => rightOrbsRef.current[idx] = el,
                     drag: true,
                     dragConstraints: containerRef,
-                    dragElastic: 0.08,
+                    dragElastic: 0,
+                    dragMomentum: false,
                     whileHover: {
-                      scale: 1.1,
-                      transition: { type: "spring", stiffness: 350, damping: 22, mass: 0.6 }
+                      scale: 1.08,
+                      transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
                     },
                     whileDrag: {
-                      scale: 1.18,
+                      scale: 1.12,
                       zIndex: 60,
-                      transition: { type: "spring", stiffness: 350, damping: 25, mass: 0.6 }
+                      transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] }
                     },
                     whileTap: {
-                      scale: 0.94,
-                      transition: { type: "spring", stiffness: 400, damping: 25 }
+                      scale: 0.96
                     },
-                    onDragStart: () => {
-                      isDraggingRef.current = true;
-                      setDraggingOrbId(srv.id);
+                    onDragStart: (e, info) => {
+                      startDragConduit(info, idx);
                       playCue("quantum_hum");
                     },
-                    onDrag: () => updateAllConduitsDirect(),
+                    onDrag: (e, info) => {
+                      moveDragConduit(info, idx);
+                    },
                     onDragEnd: () => {
-                      setDraggingOrbId(null);
-                      setTimeout(() => {
-                        isDraggingRef.current = false;
-                        updateSvgPaths();
-                      }, 250);
+                      endDragConduit();
                     },
                     onHoverStart: () => {
                       if (!draggingOrbId) {
