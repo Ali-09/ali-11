@@ -1042,6 +1042,7 @@ var TitaniaReactor = ({
   const rightOrbsRef = React3.useRef([]);
   const canvasRef = React3.useRef(null);
   const [hoveredOrbId, setHoveredOrbId] = React3.useState(null);
+  const [tooltipSide, setTooltipSide] = React3.useState("right");
   const [draggingOrbId, setDraggingOrbId] = React3.useState(null);
   const [dragKey, setDragKey] = React3.useState(0);
   React3.useRef(false);
@@ -1059,6 +1060,64 @@ var TitaniaReactor = ({
     right: []
   });
   const { playCue } = useAetheriaAudio();
+  const computeTooltipSide = (el, preferredSide) => {
+    if (!el || !containerRef.current) return preferredSide;
+    const orbRect = el.getBoundingClientRect();
+    const contRect = containerRef.current.getBoundingClientRect();
+    const spaceLeft = orbRect.left - contRect.left;
+    const spaceRight = contRect.right - orbRect.right;
+    const spaceTop = orbRect.top - contRect.top;
+    const spaceBottom = contRect.bottom - orbRect.bottom;
+    const TOOLTIP_WIDTH = 210;
+    const TOOLTIP_HEIGHT = 65;
+    if (preferredSide === "right" && spaceRight >= TOOLTIP_WIDTH) return "right";
+    if (preferredSide === "left" && spaceLeft >= TOOLTIP_WIDTH) return "left";
+    if (preferredSide === "right" && spaceLeft >= TOOLTIP_WIDTH) return "left";
+    if (preferredSide === "left" && spaceRight >= TOOLTIP_WIDTH) return "right";
+    if (spaceTop >= TOOLTIP_HEIGHT) return "top";
+    if (spaceBottom >= TOOLTIP_HEIGHT) return "bottom";
+    const spaces = [
+      { side: "right", val: spaceRight },
+      { side: "left", val: spaceLeft },
+      { side: "top", val: spaceTop },
+      { side: "bottom", val: spaceBottom }
+    ];
+    spaces.sort((a, b) => b.val - a.val);
+    return spaces[0].side;
+  };
+  const getTooltipPositionClasses = (side) => {
+    switch (side) {
+      case "left":
+        return {
+          wrapper: "right-full top-1/2 -translate-y-1/2 mr-3 text-right",
+          initial: { opacity: 0, x: 10, scale: 0.9 },
+          animate: { opacity: 1, x: 0, scale: 1 },
+          exit: { opacity: 0, x: 10, scale: 0.9 }
+        };
+      case "right":
+        return {
+          wrapper: "left-full top-1/2 -translate-y-1/2 ml-3 text-left",
+          initial: { opacity: 0, x: -10, scale: 0.9 },
+          animate: { opacity: 1, x: 0, scale: 1 },
+          exit: { opacity: 0, x: -10, scale: 0.9 }
+        };
+      case "top":
+        return {
+          wrapper: "bottom-full left-1/2 -translate-x-1/2 mb-3 text-center",
+          initial: { opacity: 0, y: 10, scale: 0.9 },
+          animate: { opacity: 1, y: 0, scale: 1 },
+          exit: { opacity: 0, y: 10, scale: 0.9 }
+        };
+      case "bottom":
+      default:
+        return {
+          wrapper: "top-full left-1/2 -translate-x-1/2 mt-3 text-center",
+          initial: { opacity: 0, y: -10, scale: 0.9 },
+          animate: { opacity: 1, y: 0, scale: 1 },
+          exit: { opacity: 0, y: -10, scale: 0.9 }
+        };
+    }
+  };
   const getServiceMeta = (srv, index) => {
     const cat = (srv.category || "").toLowerCase();
     let icon = "Brain";
@@ -1323,7 +1382,22 @@ var TitaniaReactor = ({
           /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-xs font-mono text-slate-500 dark:text-slate-400 truncate", children: subtitle })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 font-mono text-xs w-full sm:w-auto justify-between sm:justify-end shrink-0", children: [
+      /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 font-mono text-xs w-full sm:w-auto justify-between sm:justify-end flex-wrap shrink-0", children: [
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-[11px] text-cyan-300", children: [
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-cyan-400" }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-semibold uppercase tracking-wider", children: "ENTRADAS:" }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-bold text-white", children: inputs.length })
+        ] }),
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-purple-950/40 border border-purple-500/20 text-[11px] text-purple-300", children: [
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-purple-400" }),
+          /* @__PURE__ */ jsxRuntime.jsx("span", { className: "font-semibold uppercase tracking-wider", children: "SERVICIOS:" }),
+          /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "font-bold text-white", children: [
+            normalizedServices.filter((s) => s.status === "running").length,
+            "/",
+            normalizedServices.length,
+            " ONLINE"
+          ] })
+        ] }),
         /* @__PURE__ */ jsxRuntime.jsxs(
           "button",
           {
@@ -1410,75 +1484,71 @@ var TitaniaReactor = ({
               )
             ] }, `right-group-${idx}`))
           ] }),
-          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center lg:items-start justify-center z-20 font-mono h-full py-2", children: [
-            /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 mb-3 px-1 text-xs font-mono text-slate-400", children: [
-              /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-cyan-400" }),
-              /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "font-bold tracking-wider uppercase text-slate-300", children: [
-                "ENTRADAS (",
-                inputs.length,
-                ")"
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-row lg:flex-col items-center justify-center gap-3 sm:gap-3.5 flex-wrap", children: inputs.map((c, idx) => {
-              const isHovered = hoveredOrbId === c.id;
-              return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "relative flex items-center group", children: /* @__PURE__ */ jsxRuntime.jsxs(
-                framerMotion.motion.div,
-                {
-                  ref: (el) => leftOrbsRef.current[idx] = el,
-                  drag: true,
-                  dragConstraints: containerRef,
-                  dragElastic: 0,
-                  dragMomentum: false,
-                  whileHover: {
-                    scale: 1.08,
-                    transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
-                  },
-                  whileDrag: {
-                    scale: 1.12,
-                    zIndex: 60,
-                    transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] }
-                  },
-                  whileTap: { scale: 0.96 },
-                  onDragStart: (e, info) => {
-                    startDragConduit(info, idx, false);
-                    playCue("quantum_hum");
-                  },
-                  onDrag: (e, info) => {
-                    moveDragConduit(info, idx, false);
-                  },
-                  onDragEnd: () => {
-                    endDragConduit();
-                  },
-                  onHoverStart: () => {
-                    if (!draggingOrbId) {
-                      playCue("click");
-                      setHoveredOrbId(c.id);
-                    }
-                  },
-                  onHoverEnd: () => setHoveredOrbId(null),
-                  onDoubleClick: () => {
-                    playCue("activate");
-                    setInspectDetail({
-                      id: c.id,
-                      name: c.fullName,
-                      category: "Elemental Seal Input Module",
-                      description: c.sub,
-                      technicalSpecs: c.specs
-                    });
-                  },
-                  className: `w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_6px_20px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${isHovered ? "shadow-[0_0_20px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
-                  title: "\u2726 Arrastra para mover el sello elemental // Doble clic para inspeccionar",
-                  children: [
-                    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite]" }),
-                    /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: c.icon, size: 20, glow: c.id === "lumi" ? "gold" : c.id === "plasma" ? "purple" : c.id === "ignis" ? "rose" : c.id === "geo" ? "emerald" : "cyan" }),
-                    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full text-[8px] font-mono font-bold bg-black/80 text-slate-300 border border-white/10", children: c.num }),
-                    /* @__PURE__ */ jsxRuntime.jsx(framerMotion.AnimatePresence, { children: isHovered && !draggingOrbId && /* @__PURE__ */ jsxRuntime.jsxs(
+          /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-col items-center lg:items-start justify-center z-20 font-mono h-full py-2", children: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-row lg:flex-col items-center justify-center gap-3 sm:gap-3.5 flex-wrap", children: inputs.map((c, idx) => {
+            const isHovered = hoveredOrbId === c.id;
+            return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "relative flex items-center group", children: /* @__PURE__ */ jsxRuntime.jsxs(
+              framerMotion.motion.div,
+              {
+                ref: (el) => leftOrbsRef.current[idx] = el,
+                drag: true,
+                dragConstraints: containerRef,
+                dragElastic: 0,
+                dragMomentum: false,
+                whileHover: {
+                  scale: 1.08,
+                  transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
+                },
+                whileDrag: {
+                  scale: 1.12,
+                  zIndex: 60,
+                  transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] }
+                },
+                whileTap: { scale: 0.96 },
+                onDragStart: (e, info) => {
+                  startDragConduit(info, idx, false);
+                  playCue("quantum_hum");
+                },
+                onDrag: (e, info) => {
+                  moveDragConduit(info, idx, false);
+                },
+                onDragEnd: () => {
+                  endDragConduit();
+                },
+                onHoverStart: () => {
+                  if (!draggingOrbId) {
+                    playCue("click");
+                    const side = computeTooltipSide(leftOrbsRef.current[idx], "right");
+                    setTooltipSide(side);
+                    setHoveredOrbId(c.id);
+                  }
+                },
+                onHoverEnd: () => setHoveredOrbId(null),
+                onDoubleClick: () => {
+                  playCue("activate");
+                  setInspectDetail({
+                    id: c.id,
+                    name: c.fullName,
+                    category: "Elemental Seal Input Module",
+                    description: c.sub,
+                    technicalSpecs: c.specs
+                  });
+                },
+                className: `w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_6px_20px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${isHovered ? "shadow-[0_0_20px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
+                title: "\u2726 Arrastra para mover el sello elemental // Doble clic para inspeccionar",
+                children: [
+                  /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite]" }),
+                  /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: c.icon, size: 20, glow: c.id === "lumi" ? "gold" : c.id === "plasma" ? "purple" : c.id === "ignis" ? "rose" : c.id === "geo" ? "emerald" : "cyan" }),
+                  /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full text-[8px] font-mono font-bold bg-black/80 text-slate-300 border border-white/10", children: c.num }),
+                  /* @__PURE__ */ jsxRuntime.jsx(framerMotion.AnimatePresence, { children: isHovered && !draggingOrbId && (() => {
+                    const pos = getTooltipPositionClasses(tooltipSide);
+                    return /* @__PURE__ */ jsxRuntime.jsxs(
                       framerMotion.motion.div,
                       {
-                        initial: { opacity: 0, x: -10, scale: 0.9 },
-                        animate: { opacity: 1, x: 14, scale: 1 },
-                        exit: { opacity: 0, x: -10, scale: 0.9 },
-                        className: "hidden lg:block absolute left-full top-1/2 -translate-y-1/2 z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none text-left",
+                        initial: pos.initial,
+                        animate: pos.animate,
+                        exit: pos.exit,
+                        transition: { duration: 0.15, ease: "easeOut" },
+                        className: `hidden lg:block absolute z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none ${pos.wrapper}`,
                         children: [
                           /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2", children: [
                             /* @__PURE__ */ jsxRuntime.jsx("span", { className: `text-xs font-black font-heading ${c.color}`, children: c.fullName }),
@@ -1491,13 +1561,13 @@ var TitaniaReactor = ({
                           /* @__PURE__ */ jsxRuntime.jsx("p", { className: "text-[10px] text-slate-300 font-mono mt-0.5", children: c.sub })
                         ]
                       }
-                    ) })
-                  ]
-                },
-                `left-orb-${c.id}-${dragKey}`
-              ) }, c.id);
-            }) })
-          ] }),
+                    );
+                  })() })
+                ]
+              },
+              `left-orb-${c.id}-${dragKey}`
+            ) }, c.id);
+          }) }) }),
           /* @__PURE__ */ jsxRuntime.jsxs("div", { ref: coreRef, className: "relative z-20 flex flex-col items-center my-6 lg:my-0", children: [
             /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center", children: [
               /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-0 rounded-full border border-dashed border-white/[0.12] animate-[spin_40s_linear_infinite]" }),
@@ -1543,91 +1613,85 @@ var TitaniaReactor = ({
             ] }),
             /* @__PURE__ */ jsxRuntime.jsx("div", { className: "text-center mt-3 font-mono", children: /* @__PURE__ */ jsxRuntime.jsx("h3", { className: "text-xs sm:text-sm font-bold font-heading tracking-widest text-slate-600 dark:text-slate-300", children: "N\xDACLEO CU\xC1NTICO" }) })
           ] }),
-          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex flex-col items-center lg:items-end justify-center z-20 font-mono h-full py-2", children: [
-            /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center gap-2 mb-3 px-1 text-xs font-mono text-slate-400", children: [
-              /* @__PURE__ */ jsxRuntime.jsx("span", { className: "w-1.5 h-1.5 rounded-full bg-purple-400" }),
-              /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "font-bold tracking-wider uppercase text-slate-300", children: [
-                "SERVICIOS (",
-                normalizedServices.filter((s) => s.status === "running").length,
-                "/",
-                normalizedServices.length,
-                " ONLINE)"
-              ] })
-            ] }),
-            /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-row lg:flex-col items-center justify-center gap-4 sm:gap-5 flex-wrap", children: normalizedServices.map((srv, idx) => {
-              const meta = getServiceMeta(srv, idx);
-              const isHovered = hoveredOrbId === srv.id;
-              const isRunning = srv.status === "running";
-              return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "relative flex items-center group", children: /* @__PURE__ */ jsxRuntime.jsxs(
-                framerMotion.motion.div,
-                {
-                  ref: (el) => rightOrbsRef.current[idx] = el,
-                  drag: true,
-                  dragConstraints: containerRef,
-                  dragElastic: 0,
-                  dragMomentum: false,
-                  whileHover: {
-                    scale: 1.08,
-                    transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
-                  },
-                  whileDrag: {
-                    scale: 1.12,
-                    zIndex: 60,
-                    transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] }
-                  },
-                  whileTap: {
-                    scale: 0.96
-                  },
-                  onDragStart: (e, info) => {
-                    startDragConduit(info, idx, true);
-                    playCue("quantum_hum");
-                  },
-                  onDrag: (e, info) => {
-                    moveDragConduit(info, idx, true);
-                  },
-                  onDragEnd: () => {
-                    endDragConduit();
-                  },
-                  onHoverStart: () => {
-                    if (!draggingOrbId) {
-                      playCue("click");
-                      setHoveredOrbId(srv.id);
+          /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-col items-center lg:items-end justify-center z-20 font-mono h-full py-2", children: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "flex flex-row lg:flex-col items-center justify-center gap-4 sm:gap-5 flex-wrap", children: normalizedServices.map((srv, idx) => {
+            const meta = getServiceMeta(srv, idx);
+            const isHovered = hoveredOrbId === srv.id;
+            const isRunning = srv.status === "running";
+            return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "relative flex items-center group", children: /* @__PURE__ */ jsxRuntime.jsxs(
+              framerMotion.motion.div,
+              {
+                ref: (el) => rightOrbsRef.current[idx] = el,
+                drag: true,
+                dragConstraints: containerRef,
+                dragElastic: 0,
+                dragMomentum: false,
+                whileHover: {
+                  scale: 1.08,
+                  transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
+                },
+                whileDrag: {
+                  scale: 1.12,
+                  zIndex: 60,
+                  transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] }
+                },
+                whileTap: {
+                  scale: 0.96
+                },
+                onDragStart: (e, info) => {
+                  startDragConduit(info, idx, true);
+                  playCue("quantum_hum");
+                },
+                onDrag: (e, info) => {
+                  moveDragConduit(info, idx, true);
+                },
+                onDragEnd: () => {
+                  endDragConduit();
+                },
+                onHoverStart: () => {
+                  if (!draggingOrbId) {
+                    playCue("click");
+                    const side = computeTooltipSide(rightOrbsRef.current[idx], "left");
+                    setTooltipSide(side);
+                    setHoveredOrbId(srv.id);
+                  }
+                },
+                onHoverEnd: () => setHoveredOrbId(null),
+                onDoubleClick: () => {
+                  playCue("activate");
+                  setInspectDetail({
+                    id: srv.id,
+                    name: srv.name,
+                    category: "Directed Quantum Output Service",
+                    description: srv.description || `Servicio orquestado en puerto :${srv.port}`,
+                    technicalSpecs: {
+                      "Estado": srv.status.toUpperCase(),
+                      "Puerto": srv.port ? `:${srv.port}` : "Interno",
+                      "Modelos SOTA": srv.models?.join(", ") || "N/A",
+                      "Reverse Proxy": srv.url_lan || "http://ali.local"
                     }
-                  },
-                  onHoverEnd: () => setHoveredOrbId(null),
-                  onDoubleClick: () => {
-                    playCue("activate");
-                    setInspectDetail({
-                      id: srv.id,
-                      name: srv.name,
-                      category: "Directed Quantum Output Service",
-                      description: srv.description || `Servicio orquestado en puerto :${srv.port}`,
-                      technicalSpecs: {
-                        "Estado": srv.status.toUpperCase(),
-                        "Puerto": srv.port ? `:${srv.port}` : "Interno",
-                        "Modelos SOTA": srv.models?.join(", ") || "N/A",
-                        "Reverse Proxy": srv.url_lan || "http://ali.local"
-                      }
-                    });
-                  },
-                  className: `w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_8px_25px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${isHovered ? "shadow-[0_0_25px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
-                  title: "\u2726 Arrastra para mover el portal libremente por el reactor // Doble clic para inspeccionar",
-                  children: [
-                    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite_reverse]" }),
-                    /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: meta.icon, size: 22, glow: isRunning ? "emerald" : "purple" }),
-                    isRunning ? /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "absolute -top-1 -right-1 flex h-3 w-3", children: [
-                      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" }),
-                      /* @__PURE__ */ jsxRuntime.jsx("span", { className: "relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-[#070b18]" })
-                    ] }) : /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-slate-600/80 border-2 border-[#070b18]" }),
-                    /* @__PURE__ */ jsxRuntime.jsx(framerMotion.AnimatePresence, { children: isHovered && !draggingOrbId && /* @__PURE__ */ jsxRuntime.jsxs(
+                  });
+                },
+                className: `w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_8px_25px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${isHovered ? "shadow-[0_0_25px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
+                title: "\u2726 Arrastra para mover el portal libremente por el reactor // Doble clic para inspeccionar",
+                children: [
+                  /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite_reverse]" }),
+                  /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: meta.icon, size: 22, glow: isRunning ? "emerald" : "purple" }),
+                  isRunning ? /* @__PURE__ */ jsxRuntime.jsxs("span", { className: "absolute -top-1 -right-1 flex h-3 w-3", children: [
+                    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60" }),
+                    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-[#070b18]" })
+                  ] }) : /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-slate-600/80 border-2 border-[#070b18]" }),
+                  /* @__PURE__ */ jsxRuntime.jsx(framerMotion.AnimatePresence, { children: isHovered && !draggingOrbId && (() => {
+                    const pos = getTooltipPositionClasses(tooltipSide);
+                    return /* @__PURE__ */ jsxRuntime.jsxs(
                       framerMotion.motion.div,
                       {
-                        initial: { opacity: 0, x: 10, scale: 0.9 },
-                        animate: { opacity: 1, x: -14, scale: 1 },
-                        exit: { opacity: 0, x: 10, scale: 0.9 },
-                        className: "hidden lg:block absolute right-full top-1/2 -translate-y-1/2 z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none text-right",
+                        initial: pos.initial,
+                        animate: pos.animate,
+                        exit: pos.exit,
+                        transition: { duration: 0.15, ease: "easeOut" },
+                        className: `hidden lg:block absolute z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none ${pos.wrapper}`,
                         children: [
-                          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-end gap-2", children: [
+                          /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between gap-3", children: [
                             /* @__PURE__ */ jsxRuntime.jsx("span", { className: `text-xs font-black font-heading ${meta.color}`, children: srv.name }),
                             /* @__PURE__ */ jsxRuntime.jsx("span", { className: `text-[9px] font-mono font-bold ${isRunning ? "text-emerald-400" : "text-slate-400"}`, children: isRunning ? "\u25CF ONLINE" : "\u25CB STANDBY" })
                           ] }),
@@ -1638,13 +1702,13 @@ var TitaniaReactor = ({
                           ] })
                         ]
                       }
-                    ) })
-                  ]
-                },
-                `right-orb-${srv.id}-${dragKey}`
-              ) }, srv.id);
-            }) })
-          ] })
+                    );
+                  })() })
+                ]
+              },
+              `right-orb-${srv.id}-${dragKey}`
+            ) }, srv.id);
+          }) }) })
         ]
       }
     ),

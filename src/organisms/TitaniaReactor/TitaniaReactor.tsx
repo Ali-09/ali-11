@@ -180,6 +180,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [hoveredOrbId, setHoveredOrbId] = useState<string | null>(null);
+  const [tooltipSide, setTooltipSide] = useState<'top' | 'bottom' | 'left' | 'right'>('right');
   const [draggingOrbId, setDraggingOrbId] = useState<string | null>(null);
   const [dragKey, setDragKey] = useState<number>(0);
   const isDraggingRef = useRef(false);
@@ -210,6 +211,78 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
   });
 
   const { playCue } = useAetheriaAudio();
+
+  // Calcula inteligentemente hacia dónde debe abrirse el tooltip según espacio disponible (arriba, abajo, izq, der)
+  const computeTooltipSide = (el: HTMLElement | null, preferredSide: 'left' | 'right'): 'top' | 'bottom' | 'left' | 'right' => {
+    if (!el || !containerRef.current) return preferredSide;
+    const orbRect = el.getBoundingClientRect();
+    const contRect = containerRef.current.getBoundingClientRect();
+
+    const spaceLeft = orbRect.left - contRect.left;
+    const spaceRight = contRect.right - orbRect.right;
+    const spaceTop = orbRect.top - contRect.top;
+    const spaceBottom = contRect.bottom - orbRect.bottom;
+
+    const TOOLTIP_WIDTH = 210;
+    const TOOLTIP_HEIGHT = 65;
+
+    // Prioridad 1: Si el lado preferido tiene suficiente espacio horizontal y cabe verticalmente
+    if (preferredSide === 'right' && spaceRight >= TOOLTIP_WIDTH) return 'right';
+    if (preferredSide === 'left' && spaceLeft >= TOOLTIP_WIDTH) return 'left';
+
+    // Prioridad 2: Si el lado contrario tiene espacio horizontal
+    if (preferredSide === 'right' && spaceLeft >= TOOLTIP_WIDTH) return 'left';
+    if (preferredSide === 'left' && spaceRight >= TOOLTIP_WIDTH) return 'right';
+
+    // Prioridad 3: Si no cabe a los lados (orbe cerca de los bordes laterales), abrir verticalmente
+    if (spaceTop >= TOOLTIP_HEIGHT) return 'top';
+    if (spaceBottom >= TOOLTIP_HEIGHT) return 'bottom';
+
+    // Fallback: elegir la dirección con mayor espacio disponible
+    const spaces = [
+      { side: 'right' as const, val: spaceRight },
+      { side: 'left' as const, val: spaceLeft },
+      { side: 'top' as const, val: spaceTop },
+      { side: 'bottom' as const, val: spaceBottom },
+    ];
+    spaces.sort((a, b) => b.val - a.val);
+    return spaces[0].side;
+  };
+
+  const getTooltipPositionClasses = (side: 'top' | 'bottom' | 'left' | 'right') => {
+    switch (side) {
+      case 'left':
+        return {
+          wrapper: 'right-full top-1/2 -translate-y-1/2 mr-3 text-right',
+          initial: { opacity: 0, x: 10, scale: 0.9 },
+          animate: { opacity: 1, x: 0, scale: 1 },
+          exit: { opacity: 0, x: 10, scale: 0.9 }
+        };
+      case 'right':
+        return {
+          wrapper: 'left-full top-1/2 -translate-y-1/2 ml-3 text-left',
+          initial: { opacity: 0, x: -10, scale: 0.9 },
+          animate: { opacity: 1, x: 0, scale: 1 },
+          exit: { opacity: 0, x: -10, scale: 0.9 }
+        };
+      case 'top':
+        return {
+          wrapper: 'bottom-full left-1/2 -translate-x-1/2 mb-3 text-center',
+          initial: { opacity: 0, y: 10, scale: 0.9 },
+          animate: { opacity: 1, y: 0, scale: 1 },
+          exit: { opacity: 0, y: 10, scale: 0.9 }
+        };
+      case 'bottom':
+      default:
+        return {
+          wrapper: 'top-full left-1/2 -translate-x-1/2 mt-3 text-center',
+          initial: { opacity: 0, y: -10, scale: 0.9 },
+          animate: { opacity: 1, y: 0, scale: 1 },
+          exit: { opacity: 0, y: -10, scale: 0.9 }
+        };
+    }
+  };
+
 
   // Helper para asignar iconos y colores mágicos a cualquier servicio dinámico
   const getServiceMeta = (srv: DynamicServiceItem, index: number) => {
@@ -563,7 +636,22 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2 font-mono text-xs w-full sm:w-auto justify-between sm:justify-end shrink-0">
+        <div className="flex items-center gap-2 font-mono text-xs w-full sm:w-auto justify-between sm:justify-end flex-wrap shrink-0">
+          {/* Telemetría Integrada: Entradas y Salidas sin invadir la arena */}
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 text-[11px] text-cyan-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <span className="font-semibold uppercase tracking-wider">ENTRADAS:</span>
+            <span className="font-bold text-white">{inputs.length}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-purple-950/40 border border-purple-500/20 text-[11px] text-purple-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+            <span className="font-semibold uppercase tracking-wider">SERVICIOS:</span>
+            <span className="font-bold text-white">
+              {normalizedServices.filter((s) => s.status === 'running').length}/{normalizedServices.length} ONLINE
+            </span>
+          </div>
+
           <button
             type="button"
             onClick={() => {
@@ -577,6 +665,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
             <Icon name="RefreshCw" size={11} />
             <span>REORGANIZAR</span>
           </button>
+
           <div className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] flex items-center gap-2 text-xs shrink-0">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
             <span className="font-bold text-emerald-600 dark:text-emerald-400">{frequency}</span>
@@ -651,10 +740,6 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
 
         {/* COLUMNA IZQUIERDA: 5 SELLOS ELEMENTALES CIRCULARES CON ALINEACIÓN VERTICAL PERFECTA */}
         <div className="flex flex-col items-center lg:items-start justify-center z-20 font-mono h-full py-2">
-          <div className="flex items-center gap-2 mb-3 px-1 text-xs font-mono text-slate-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <span className="font-bold tracking-wider uppercase text-slate-300">ENTRADAS ({inputs.length})</span>
-          </div>
 
           <div className="flex flex-row lg:flex-col items-center justify-center gap-3 sm:gap-3.5 flex-wrap">
             {inputs.map((c, idx) => {
@@ -692,6 +777,8 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                     onHoverStart={() => {
                       if (!draggingOrbId) {
                         playCue('click');
+                        const side = computeTooltipSide(leftOrbsRef.current[idx], 'right');
+                        setTooltipSide(side);
                         setHoveredOrbId(c.id);
                       }
                     }}
@@ -717,22 +804,26 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                       {c.num}
                     </span>
 
-                    {/* Tooltip Holográfico que sigue fielmente al orbe */}
+                    {/* Tooltip Holográfico Inteligente y Multidireccional */}
                     <AnimatePresence>
-                      {isHovered && !draggingOrbId && (
-                        <motion.div
-                          initial={{ opacity: 0, x: -10, scale: 0.9 }}
-                          animate={{ opacity: 1, x: 14, scale: 1 }}
-                          exit={{ opacity: 0, x: -10, scale: 0.9 }}
-                          className="hidden lg:block absolute left-full top-1/2 -translate-y-1/2 z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none text-left"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className={`text-xs font-black font-heading ${c.color}`}>{c.fullName}</span>
-                            <span className="text-[9px] font-mono text-slate-400">[{c.num}]</span>
-                          </div>
-                          <p className="text-[10px] text-slate-300 font-mono mt-0.5">{c.sub}</p>
-                        </motion.div>
-                      )}
+                      {isHovered && !draggingOrbId && (() => {
+                        const pos = getTooltipPositionClasses(tooltipSide);
+                        return (
+                          <motion.div
+                            initial={pos.initial}
+                            animate={pos.animate}
+                            exit={pos.exit}
+                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                            className={`hidden lg:block absolute z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none ${pos.wrapper}`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs font-black font-heading ${c.color}`}>{c.fullName}</span>
+                              <span className="text-[9px] font-mono text-slate-400">[{c.num}]</span>
+                            </div>
+                            <p className="text-[10px] text-slate-300 font-mono mt-0.5">{c.sub}</p>
+                          </motion.div>
+                        );
+                      })()}
                     </AnimatePresence>
                   </motion.div>
                 </div>
@@ -795,12 +886,6 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
 
         {/* COLUMNA DERECHA: NODOS ORBES 100% DINÁMICOS CON ALINEACIÓN VERTICAL EQUILIBRADA */}
         <div className="flex flex-col items-center lg:items-end justify-center z-20 font-mono h-full py-2">
-          <div className="flex items-center gap-2 mb-3 px-1 text-xs font-mono text-slate-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
-            <span className="font-bold tracking-wider uppercase text-slate-300">
-              SERVICIOS ({normalizedServices.filter((s) => s.status === 'running').length}/{normalizedServices.length} ONLINE)
-            </span>
-          </div>
 
           <div className="flex flex-row lg:flex-col items-center justify-center gap-4 sm:gap-5 flex-wrap">
             {normalizedServices.map((srv, idx) => {
@@ -843,6 +928,8 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                     onHoverStart={() => {
                       if (!draggingOrbId) {
                         playCue('click');
+                        const side = computeTooltipSide(rightOrbsRef.current[idx], 'left');
+                        setTooltipSide(side);
                         setHoveredOrbId(srv.id);
                       }
                     }}
@@ -879,26 +966,30 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                       <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-slate-600/80 border-2 border-[#070b18]" />
                     )}
 
-                    {/* Tooltip Holográfico que sigue fielmente al orbe */}
+                    {/* Tooltip Holográfico Inteligente y Multidireccional */}
                     <AnimatePresence>
-                      {isHovered && !draggingOrbId && (
-                        <motion.div
-                          initial={{ opacity: 0, x: 10, scale: 0.9 }}
-                          animate={{ opacity: 1, x: -14, scale: 1 }}
-                          exit={{ opacity: 0, x: 10, scale: 0.9 }}
-                          className="hidden lg:block absolute right-full top-1/2 -translate-y-1/2 z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none text-right"
-                        >
-                          <div className="flex items-center justify-end gap-2">
-                            <span className={`text-xs font-black font-heading ${meta.color}`}>{srv.name}</span>
-                            <span className={`text-[9px] font-mono font-bold ${isRunning ? 'text-emerald-400' : 'text-slate-400'}`}>
-                              {isRunning ? '● ONLINE' : '○ STANDBY'}
-                            </span>
-                          </div>
-                          <p className="text-[10px] text-slate-300 font-mono mt-0.5">
-                            {srv.port ? `PUERTO :${srv.port}` : 'PROCESO'} {srv.models?.length ? `// ${srv.models.join(', ')}` : ''}
-                          </p>
-                        </motion.div>
-                      )}
+                      {isHovered && !draggingOrbId && (() => {
+                        const pos = getTooltipPositionClasses(tooltipSide);
+                        return (
+                          <motion.div
+                            initial={pos.initial}
+                            animate={pos.animate}
+                            exit={pos.exit}
+                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                            className={`hidden lg:block absolute z-50 whitespace-nowrap bg-slate-900/95 dark:bg-[#070c1c]/95 border border-slate-200/80 dark:border-white/[0.15] px-3 py-1.5 rounded-2xl shadow-2xl backdrop-blur-xl pointer-events-none ${pos.wrapper}`}
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <span className={`text-xs font-black font-heading ${meta.color}`}>{srv.name}</span>
+                              <span className={`text-[9px] font-mono font-bold ${isRunning ? 'text-emerald-400' : 'text-slate-400'}`}>
+                                {isRunning ? '● ONLINE' : '○ STANDBY'}
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-slate-300 font-mono mt-0.5">
+                              {srv.port ? `PUERTO :${srv.port}` : 'PROCESO'} {srv.models?.length ? `// ${srv.models.join(', ')}` : ''}
+                            </p>
+                          </motion.div>
+                        );
+                      })()}
                     </AnimatePresence>
                   </motion.div>
                 </div>
