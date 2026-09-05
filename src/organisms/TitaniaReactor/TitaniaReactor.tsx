@@ -676,17 +676,39 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
               const isHovered = hoveredOrbId === c.id;
               return (
                 <div key={c.id} className="relative flex items-center group">
-                  {/* Orbe Circular Elemental (Cristal de obsidiana y brillo interior) */}
+                  {/* Orbe Circular Elemental (Draggable, física fluida sin retardo y cristal de obsidiana) */}
                   <motion.div
+                    key={`left-orb-${c.id}-${dragKey}`}
                     ref={(el) => (leftOrbsRef.current[idx] = el)}
+                    drag
+                    dragConstraints={containerRef}
+                    dragElastic={0}
+                    dragMomentum={false}
                     whileHover={{
-                      scale: 1.10,
-                      transition: { type: 'spring', stiffness: 350, damping: 22, mass: 0.6 }
+                      scale: 1.08,
+                      transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
                     }}
-                    whileTap={{ scale: 0.94 }}
+                    whileDrag={{
+                      scale: 1.12,
+                      zIndex: 60,
+                      transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] }
+                    }}
+                    whileTap={{ scale: 0.96 }}
+                    onDragStart={(e, info) => {
+                      startDragConduit(info, idx, false);
+                      playCue('quantum_hum');
+                    }}
+                    onDrag={(e, info) => {
+                      moveDragConduit(info, idx, false);
+                    }}
+                    onDragEnd={() => {
+                      endDragConduit();
+                    }}
                     onHoverStart={() => {
-                      playCue('click');
-                      setHoveredOrbId(c.id);
+                      if (!draggingOrbId) {
+                        playCue('click');
+                        setHoveredOrbId(c.id);
+                      }
                     }}
                     onHoverEnd={() => setHoveredOrbId(null)}
                     onDoubleClick={() => {
@@ -699,9 +721,10 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                         technicalSpecs: c.specs
                       });
                     }}
-                    className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_6px_20px_rgba(0,0,0,0.5)] relative transition-all duration-300 ${
+                    className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_6px_20px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${
                       isHovered ? 'shadow-[0_0_20px_rgba(168,85,247,0.25)] border-white/30' : ''
                     }`}
+                    title="✦ Arrastra para mover el sello elemental // Doble clic para inspeccionar"
                   >
                     <div className="absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite]" />
                     <Icon name={c.icon} size={20} glow={c.id === 'lumi' ? 'gold' : c.id === 'plasma' ? 'purple' : c.id === 'ignis' ? 'rose' : c.id === 'geo' ? 'emerald' : 'cyan'} />
@@ -894,7 +917,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                         }
                       });
                     }}
-                    className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_8px_25px_rgba(0,0,0,0.5)] relative select-none transition-all duration-300 ${
+                    className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_8px_25px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${
                       isHovered ? 'shadow-[0_0_25px_rgba(168,85,247,0.25)] border-white/30' : ''
                     }`}
                     title="✦ Arrastra para mover el portal libremente por el reactor // Doble clic para inspeccionar"

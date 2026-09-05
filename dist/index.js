@@ -1156,7 +1156,7 @@ var TitaniaReactor = ({
     const coreRect = coreRef.current.getBoundingClientRect();
     const imgEl = coreRef.current.querySelector("img");
     const imgRect = imgEl ? imgEl.getBoundingClientRect() : coreRect;
-    const orb = rightOrbsRef.current[idx] ;
+    const orb = isRight ? rightOrbsRef.current[idx] : leftOrbsRef.current[idx];
     if (!orb) return;
     const orbRect = orb.getBoundingClientRect();
     dragCtxRef.current = {
@@ -1170,24 +1170,34 @@ var TitaniaReactor = ({
       initialPointerX: info.point.x,
       initialPointerY: info.point.y
     };
-    setDraggingOrbId(normalizedServices[idx]?.id || null );
+    setDraggingOrbId(isRight ? normalizedServices[idx]?.id || null : inputs[idx]?.id || null);
   };
   const moveDragConduit = (info, idx, isRight) => {
     const ctx = dragCtxRef.current;
     if (!ctx) return;
-    const pathEl = document.getElementById(`right-path-${idx}` );
-    const glowEl = document.getElementById(`right-glow-${idx}` );
+    const pathEl = document.getElementById(isRight ? `right-path-${idx}` : `left-path-${idx}`);
+    const glowEl = document.getElementById(isRight ? `right-glow-${idx}` : `left-glow-${idx}`);
     if (!pathEl && !glowEl) return;
     const deltaX = info.point.x - ctx.initialPointerX;
     const deltaY = info.point.y - ctx.initialPointerY;
     const orbCenterX = ctx.initialOrbX + deltaX;
     const orbCenterY = ctx.initialOrbY + deltaY;
-    {
+    if (isRight) {
       const isRightOfCore = orbCenterX >= ctx.coreCenterX;
       const x1 = isRightOfCore ? ctx.coreCenterX + ctx.coreRadius : ctx.coreCenterX - ctx.coreRadius;
       const y1 = ctx.coreCenterY;
       const x2 = isRightOfCore ? orbCenterX - 28 : orbCenterX + 28;
       const y2 = orbCenterY;
+      const cpX = (x1 + x2) / 2;
+      const d = `M ${x1} ${y1} C ${cpX} ${y1}, ${cpX} ${y2}, ${x2} ${y2}`;
+      if (pathEl) pathEl.setAttribute("d", d);
+      if (glowEl) glowEl.setAttribute("d", d);
+    } else {
+      const isLeftOfCore = orbCenterX <= ctx.coreCenterX;
+      const x1 = isLeftOfCore ? orbCenterX + 24 : orbCenterX - 24;
+      const y1 = orbCenterY;
+      const x2 = isLeftOfCore ? ctx.coreCenterX - ctx.coreRadius : ctx.coreCenterX + ctx.coreRadius;
+      const y2 = ctx.coreCenterY;
       const cpX = (x1 + x2) / 2;
       const d = `M ${x1} ${y1} C ${cpX} ${y1}, ${cpX} ${y2}, ${x2} ${y2}`;
       if (pathEl) pathEl.setAttribute("d", d);
@@ -1421,14 +1431,35 @@ var TitaniaReactor = ({
                   framerMotion.motion.div,
                   {
                     ref: (el) => leftOrbsRef.current[idx] = el,
+                    drag: true,
+                    dragConstraints: containerRef,
+                    dragElastic: 0,
+                    dragMomentum: false,
                     whileHover: {
-                      scale: 1.1,
-                      transition: { type: "spring", stiffness: 350, damping: 22, mass: 0.6 }
+                      scale: 1.08,
+                      transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] }
                     },
-                    whileTap: { scale: 0.94 },
+                    whileDrag: {
+                      scale: 1.12,
+                      zIndex: 60,
+                      transition: { duration: 0.15, ease: [0.16, 1, 0.3, 1] }
+                    },
+                    whileTap: { scale: 0.96 },
+                    onDragStart: (e, info) => {
+                      startDragConduit(info, idx, false);
+                      playCue("quantum_hum");
+                    },
+                    onDrag: (e, info) => {
+                      moveDragConduit(info, idx, false);
+                    },
+                    onDragEnd: () => {
+                      endDragConduit();
+                    },
                     onHoverStart: () => {
-                      playCue("click");
-                      setHoveredOrbId(c.id);
+                      if (!draggingOrbId) {
+                        playCue("click");
+                        setHoveredOrbId(c.id);
+                      }
                     },
                     onHoverEnd: () => setHoveredOrbId(null),
                     onDoubleClick: () => {
@@ -1441,13 +1472,15 @@ var TitaniaReactor = ({
                         technicalSpecs: c.specs
                       });
                     },
-                    className: `w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_6px_20px_rgba(0,0,0,0.5)] relative transition-all duration-300 ${isHovered ? "shadow-[0_0_20px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
+                    className: `w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_6px_20px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${isHovered ? "shadow-[0_0_20px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
+                    title: "\u2726 Arrastra para mover el sello elemental // Doble clic para inspeccionar",
                     children: [
                       /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite]" }),
                       /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: c.icon, size: 20, glow: c.id === "lumi" ? "gold" : c.id === "plasma" ? "purple" : c.id === "ignis" ? "rose" : c.id === "geo" ? "emerald" : "cyan" }),
                       /* @__PURE__ */ jsxRuntime.jsx("span", { className: "absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full text-[8px] font-mono font-bold bg-black/80 text-slate-300 border border-white/10", children: c.num })
                     ]
-                  }
+                  },
+                  `left-orb-${c.id}-${dragKey}`
                 ),
                 /* @__PURE__ */ jsxRuntime.jsx(framerMotion.AnimatePresence, { children: isHovered && !draggingOrbId && /* @__PURE__ */ jsxRuntime.jsxs(
                   framerMotion.motion.div,
@@ -1581,11 +1614,11 @@ var TitaniaReactor = ({
                       scale: 0.96
                     },
                     onDragStart: (e, info) => {
-                      startDragConduit(info, idx);
+                      startDragConduit(info, idx, true);
                       playCue("quantum_hum");
                     },
                     onDrag: (e, info) => {
-                      moveDragConduit(info, idx);
+                      moveDragConduit(info, idx, true);
                     },
                     onDragEnd: () => {
                       endDragConduit();
@@ -1612,7 +1645,7 @@ var TitaniaReactor = ({
                         }
                       });
                     },
-                    className: `w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_8px_25px_rgba(0,0,0,0.5)] relative select-none transition-all duration-300 ${isHovered ? "shadow-[0_0_25px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
+                    className: `w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-white/15 dark:border-white/[0.18] bg-gradient-to-br from-slate-900/95 via-[#0d142c] to-[#070b18] flex items-center justify-center cursor-grab active:cursor-grabbing shadow-[inset_0_1px_1px_rgba(255,255,255,0.18),0_8px_25px_rgba(0,0,0,0.5)] relative select-none transition-shadow duration-200 ${isHovered ? "shadow-[0_0_25px_rgba(168,85,247,0.25)] border-white/30" : ""}`,
                     title: "\u2726 Arrastra para mover el portal libremente por el reactor // Doble clic para inspeccionar",
                     children: [
                       /* @__PURE__ */ jsxRuntime.jsx("div", { className: "absolute inset-1 rounded-full border border-dashed border-white/10 animate-[spin_25s_linear_infinite_reverse]" }),
