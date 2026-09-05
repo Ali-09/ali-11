@@ -180,6 +180,8 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const [hoveredOrbId, setHoveredOrbId] = useState<string | null>(null);
+  const [draggingOrbId, setDraggingOrbId] = useState<string | null>(null);
+  const [dragKey, setDragKey] = useState<number>(0);
   const [inspectDetail, setInspectDetail] = useState<{
     id: string;
     name: string;
@@ -263,14 +265,18 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
     const coreCenterX = imgRect.left - contRect.left + imgRect.width / 2;
     const coreCenterY = imgRect.top - contRect.top + imgRect.height / 2 + 12; // Base de las páginas abiertas
 
-    // Conexiones de Entrada (Izquierda)
+    // Conexiones de Entrada (Izquierda) con soporte para arrastre libre 360°
     const leftPaths: Array<{ d: string; color: string; id: string; active: boolean }> = [];
     leftOrbsRef.current.forEach((orb, idx) => {
       if (!orb) return;
       const orbRect = orb.getBoundingClientRect();
-      const x1 = orbRect.right - contRect.left;
-      const y1 = orbRect.top - contRect.top + orbRect.height / 2;
-      const x2 = coreCenterX - (imgRect.width * 0.38);
+      const orbCenterX = orbRect.left - contRect.left + orbRect.width / 2;
+      const orbCenterY = orbRect.top - contRect.top + orbRect.height / 2;
+
+      const isLeftOfCore = orbCenterX <= coreCenterX;
+      const x1 = isLeftOfCore ? orbRect.right - contRect.left : orbRect.left - contRect.left;
+      const y1 = orbCenterY;
+      const x2 = isLeftOfCore ? coreCenterX - (imgRect.width * 0.38) : coreCenterX + (imgRect.width * 0.38);
       const y2 = coreCenterY;
       const cpX = (x1 + x2) / 2;
 
@@ -283,15 +289,19 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
       });
     });
 
-    // Conexiones de Salida Dinámicas (Derecha)
+    // Conexiones de Salida Dinámicas (Derecha - Servicios Draggable)
     const rightPaths: Array<{ d: string; color: string; id: string; active: boolean }> = [];
     rightOrbsRef.current.forEach((orb, idx) => {
       if (!orb) return;
       const orbRect = orb.getBoundingClientRect();
-      const x1 = coreCenterX + (imgRect.width * 0.38);
+      const orbCenterX = orbRect.left - contRect.left + orbRect.width / 2;
+      const orbCenterY = orbRect.top - contRect.top + orbRect.height / 2;
+
+      const isRightOfCore = orbCenterX >= coreCenterX;
+      const x1 = isRightOfCore ? coreCenterX + (imgRect.width * 0.38) : coreCenterX - (imgRect.width * 0.38);
       const y1 = coreCenterY;
-      const x2 = orbRect.left - contRect.left;
-      const y2 = orbRect.top - contRect.top + orbRect.height / 2;
+      const x2 = isRightOfCore ? orbRect.left - contRect.left : orbRect.right - contRect.left;
+      const y2 = orbCenterY;
       const cpX = (x1 + x2) / 2;
 
       const srv = normalizedServices[idx];
@@ -480,8 +490,21 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
 
         <div className="flex items-center justify-between sm:justify-end gap-3 font-mono text-xs w-full lg:w-auto shrink-0 flex-wrap">
           <span className="text-[11px] text-slate-400 hidden xl:inline">
-            Pasa el cursor sobre los sellos rúnicos // Doble clic para telemetría
+            ✦ Arrastra los orbes de servicios para reordenar libremente // Doble clic para telemetría
           </span>
+          <button
+            type="button"
+            onClick={() => {
+              playCue('click');
+              setDragKey((k) => k + 1);
+              setTimeout(() => updateSvgPaths(), 80);
+            }}
+            className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-purple-950/60 dark:hover:bg-purple-900/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 text-[10px] font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+            title="Restablecer orbes a sus posiciones gravitacionales originales"
+          >
+            <Icon name="RefreshCw" size={11} />
+            <span>REORGANIZAR</span>
+          </button>
           <div className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-[#070c18] border border-slate-200 dark:border-purple-500/30 flex items-center gap-2 shadow-inner shrink-0">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
             <span className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs">FREQUENCY:</span>
@@ -604,7 +627,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
 
                   {/* Tooltip Holográfico en Hover */}
                   <AnimatePresence>
-                    {isHovered && (
+                    {isHovered && !draggingOrbId && (
                       <motion.div
                         initial={{ opacity: 0, x: -10, scale: 0.9 }}
                         animate={{ opacity: 1, x: 12, scale: 1 }}
@@ -714,7 +737,7 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                 <div key={srv.id} className="relative flex items-center group">
                   {/* Tooltip Holográfico en Hover */}
                   <AnimatePresence>
-                    {isHovered && (
+                    {isHovered && !draggingOrbId && (
                       <motion.div
                         initial={{ opacity: 0, x: 10, scale: 0.9 }}
                         animate={{ opacity: 1, x: -12, scale: 1 }}
@@ -734,14 +757,30 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                     )}
                   </AnimatePresence>
 
-                  {/* Orbe Circular Dinámico */}
+                  {/* Orbe Circular Dinámico (Draggable / Movible) */}
                   <motion.div
+                    key={`right-orb-${srv.id}-${dragKey}`}
                     ref={(el) => (rightOrbsRef.current[idx] = el)}
-                    whileHover={{ scale: 1.2, rotate: -6 }}
+                    drag
+                    dragConstraints={containerRef}
+                    dragElastic={0.15}
+                    whileHover={{ scale: 1.18 }}
+                    whileDrag={{ scale: 1.28, zIndex: 60 }}
                     whileTap={{ scale: 0.92 }}
+                    onDragStart={() => {
+                      setDraggingOrbId(srv.id);
+                      playCue('quantum_hum');
+                    }}
+                    onDrag={() => updateSvgPaths()}
+                    onDragEnd={() => {
+                      setDraggingOrbId(null);
+                      updateSvgPaths();
+                    }}
                     onHoverStart={() => {
-                      playCue('click');
-                      setHoveredOrbId(srv.id);
+                      if (!draggingOrbId) {
+                        playCue('click');
+                        setHoveredOrbId(srv.id);
+                      }
                     }}
                     onHoverEnd={() => setHoveredOrbId(null)}
                     onDoubleClick={() => {
@@ -759,9 +798,10 @@ export const TitaniaReactor: React.FC<TitaniaReactorProps> = ({
                         }
                       });
                     }}
-                    className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 bg-gradient-to-br ${meta.bgGradient} ${meta.borderColor} flex items-center justify-center cursor-pointer shadow-xl relative transition-all duration-300 ${
+                    className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 bg-gradient-to-br ${meta.bgGradient} ${meta.borderColor} flex items-center justify-center cursor-grab active:cursor-grabbing shadow-xl relative select-none transition-shadow duration-300 ${
                       isRunning ? 'ring-4 ring-emerald-500/50 shadow-emerald-500/30' : isHovered ? 'ring-4 ring-cyan-500/60 shadow-2xl' : ''
                     }`}
+                    title="✦ Arrastra para mover el portal libremente por el reactor // Doble clic para inspeccionar"
                   >
                     <div className="absolute inset-1 rounded-full border border-dashed border-white/20 animate-[spin_18s_linear_infinite_reverse]" />
                     <Icon name={meta.icon} size={22} glow={isRunning ? 'emerald' : 'purple'} />
